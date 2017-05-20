@@ -57,8 +57,8 @@ Installation Logicielle :
 
 -> Installation classique (NE PAS MAJ avec apt-get update / upgrade si vous utilisez l'écran 3.5 pouces !)
 
-* Installer l'écran :
----------------------
+Installer l'écran :
+-------------------
 
 (https://github.com/goodtft/LCD-show/blob/master/README.md)
 
@@ -129,8 +129,8 @@ Sauvegarder et quittez (ctrl+X) et redémarrez.
 Voila l'écran est Installé et fonctionnel, reste à lui trouver une utilité ! ;)
 
 
-* Installer la Caméra :
-------------------------
+Installer la Caméra :
+---------------------
 
 Déballez et montez la caméra avec ses diodes IR, branchez la au Raspberry à l'aide de la nappe fournie.
 
@@ -166,8 +166,8 @@ Vous pouvez accéder à la page qui hébèrge votre vidéo à l'adresse <IP du Raspber
 Ctrl+C pour stopper la vidéo.
 
 
-* Installer un Dongle Wifi
----------------------------
+Installer un Dongle Wifi :
+--------------------------
 
 Le but de cette opération est de rendre le robot utilisable en conditions connectée et déconnectée.
 
@@ -348,8 +348,8 @@ Tester avec et sans connexion, vous devriez garder accès à votre raspberry avec 
 Avec le dongle vous pouvez y accéder sur son IP locale ou Publique, les forwardings (type :8000 ou :8080) fonctionnent.
 
 
-* Installer WebIOPi :
----------------------
+Installer WebIOPi :
+-------------------
 
 WebIOPi est un utilitaire qui va permettre a une page web hébergée sur le raspberry de communiquer avec un script Python.
 Cela va nous permettre de créer notre interface et controler des ports GPIO.
