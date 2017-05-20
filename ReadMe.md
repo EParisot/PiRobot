@@ -288,10 +288,7 @@ Maintenant nous devons configurer le routage entre nos deux interfaces wifi :
 sudo nano /etc/sysctl.conf
 ```
 
-Décommentez si nécéssaire la ligne net.ipv4.ip_forward=1 comme dans l'exemple :
-
-# Uncomment the next line to enable packet forwarding for IPv4
-net.ipv4.ip_forward=1
+Décommentez si nécéssaire la ligne "net.ipv4.ip_forward=1"
 
 Quittez et lancez la commande suivante pour activer le forwarding :
 
