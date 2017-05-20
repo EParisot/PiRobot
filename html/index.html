@@ -1,0 +1,254 @@
+<html>
+
+<head>
+
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="style.css" />
+		
+        <title>Robot Control</title>
+		
+ 
+    </script>
+		
+		
+		<style>
+		body {
+			overflow	: hidden;
+			padding		: 0;
+			margin		: 0;
+			background: #BBB url(http://192.168.0.14:8080/?action=stream) no-repeat center ;
+			background-size: cover;
+
+		}				 
+		
+		
+		 #zone_joystick1 {
+		 
+		 position : absolute;
+		 bottom : 0px;
+		 left : 0px;
+		 width : 20%;
+		 height : 60%;
+		 border: 1px solid lime;
+		 }
+		 
+		 #zone_joystick2 {
+		 
+		 position : absolute;
+		 bottom : 0px;
+		 right : 0px;
+		 width : 20%;
+		 height : 60%;
+		 border: 1px solid lime;
+		 }
+		 
+		 #result_joystick1 {
+		 
+		 position : absolute;
+		 bottom : 0px;
+		 right : 0px;
+		 }
+		 
+		#result_joystick2 {
+		 
+		 position : absolute;
+		 bottom : 0px;
+		 left : 0px;
+		 }
+		
+		#toggles {
+		
+		 display: flex;
+		 flex-direction: column;
+		 justify-content : flex-end;
+		 align-items: center;
+		 position : absolute;
+		 bottom : 0px;
+		 left : 30%;
+		 right : 30%;
+		 width : 40%;
+		 border: 1px solid lime;
+		
+		}
+		
+		#toggle {
+	    display: flex;
+		}
+		
+		p {
+		 font-size: 20px;
+		 }
+		
+		/* The switch - the box around the slider */
+		.switch {
+		  position: relative;
+		  margin: 12px;
+		  display: inline-block;
+		  width: 60px;
+		  height: 34px;
+		}
+
+		/* Hide default HTML checkbox */
+		.switch input {display:none;}
+
+		/* The slider */
+		.slider {
+		  position: absolute;
+		  cursor: pointer;
+		  top: 0;
+		  left: 0;
+		  right: 0;
+		  bottom: 0;
+		  background-color: #ccc;
+		  -webkit-transition: .4s;
+		  transition: .4s;
+		}
+
+		.slider:before {
+		  position: absolute;
+		  content: "";
+		  height: 26px;
+		  width: 26px;
+		  left: 4px;
+		  bottom: 4px;
+		  background-color: white;
+		  -webkit-transition: .4s;
+		  transition: .4s;
+		}
+
+		input:checked + .slider {
+		  background-color: #21f243;
+		}
+
+		input:focus + .slider {
+		  box-shadow: 0 0 1px #21f243;
+		}
+
+		input:checked + .slider:before {
+		  -webkit-transform: translateX(26px);
+		  -ms-transform: translateX(26px);
+		  transform: translateX(26px);
+		}
+
+		/* Rounded sliders */
+		.slider.round {
+		  border-radius: 34px;
+		}
+
+		.slider.round:before {
+		  border-radius: 50%;
+		}
+		</style>
+
+</head>
+
+<body>
+
+
+<div id="toggles">
+
+<div id="toggle">
+<p>Caméra : </p>
+<label class="switch">
+  <input type="checkbox">
+  <div class="slider round"></div>
+</label>
+</div>
+
+<div id="toggle">
+<p>Nocturne : </p>
+<label class="switch">
+  <input type="checkbox">
+  <div class="slider round"></div>
+</label>
+</div>
+
+</div>
+
+<div id="zone_joystick1"><div id="result_joystick1"></div></div>
+<div id="zone_joystick2"><div id="result_joystick2"></div></div>
+
+
+
+<script src="nipplejs.min.js"></script>
+<script>
+
+	// premier Joystick
+	var joystick1 = nipplejs.create({
+			zone: document.getElementById('zone_joystick1'),
+			mode: 'static',
+			size: 200,
+			position: {left: '50%', top: '50%'},
+			color: 'lime'
+	});
+
+	joystick1.on('plain:up', function (evt, data) 
+	{
+		joystick1.on('start move', function (evt, data) 
+	    {			
+	 		var position1 = data.distance;						
+			var outputEl	= document.getElementById('result_joystick1');				
+			outputEl.innerHTML	= ' dy 1 : ' + position1; 			
+		})
+	});
+	
+	joystick1.on('plain:down', function (evt, data) 
+	{
+		joystick1.on('start move', function (evt, data) 
+	    {			
+	 		var position1 = - data.distance;						
+			var outputEl	= document.getElementById('result_joystick1');				
+			outputEl.innerHTML	= ' dy 1 : ' + position1; 			
+		})
+	});
+									
+	joystick1.on('end', function (evt, data) 
+	{
+		var position1 = 0;
+		var outputEl	= document.getElementById('result_joystick1');				
+		outputEl.innerHTML	= ' dy 1 : ' + position1;		
+	});      
+
+	
+
+	// second Joystick	
+	var joystick2 = nipplejs.create({
+			zone: document.getElementById('zone_joystick2'),
+			mode: 'static',
+			size: 200,
+			position: {left: '50%', top: '50%'},
+			color: 'lime'
+	});
+	
+    joystick2.on('plain:up', function (evt, data) 
+	{
+		joystick2.on('start move', function (evt, data) 
+	    {			
+	 		var position2 = data.distance;						
+			var outputE2	= document.getElementById('result_joystick2');				
+			outputE2.innerHTML	= ' dy 2 : ' + position2; 			
+		})
+	});
+	
+	joystick2.on('plain:down', function (evt, data) 
+	{
+		joystick2.on('start move', function (evt, data) 
+	    {			
+	 		var position2 = - data.distance;						
+			var outputE2	= document.getElementById('result_joystick2');				
+			outputE2.innerHTML	= ' dy 2 : ' + position2; 			
+		})
+	});
+		
+	joystick2.on('end', function (evt, data) 
+	{
+		var position2 = 0;
+		var outputE2	= document.getElementById('result_joystick2');				
+		outputE2.innerHTML	= ' dy 2 : ' + position2;		
+	});  
+	
+</script>
+
+</body>
+
+</html>

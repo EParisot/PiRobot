@@ -1,0 +1,5 @@
+# cd LCD-show/
+
+# sudo ./LCD35-show
+ou
+# sudo ./LCD-hdmi
