@@ -212,8 +212,8 @@ Commentez (#) les lignes faisant mention de "option domain-name"
 
 Dé-commentez (enlever #) "authoritative;"
 
-# If this DHCP server is the official DHCP server for the local
-# network, the authoritative directive should be uncommented.
+#If this DHCP server is the official DHCP server for the local
+#network, the authoritative directive should be uncommented.
 authoritative;
 
 Et enfin, en bas du fichier, ajoutez :
