@@ -1,3 +1,10 @@
+
+sudo service livestream.sh start
+sudo service livestream.sh stop
+sudo service livestream.sh restart
+
+_________
 # cd mjpg-streamer/mjpg-streamer-experimental
 
-# mjpg_streamer -o "output_http.so -w ./www" -i "input_raspicam.so"
+# export LD_LIBRARY_PATH=.
+# ./mjpg_streamer -o "output_http.so -w ./www" -i "input_raspicam.so"

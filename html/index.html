@@ -1,27 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-
 <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>PiRobot</title>
+        <script type="text/javascript" src="/webiopi.js"></script>
+        <script type="text/javascript">
+        webiopi().ready(function() {
 
-        <meta charset="utf-8" />
-        <link rel="stylesheet" href="style.css" />
+                // Refresh GPIO buttons
+                // pass true to refresh repeatedly of false to refresh once
+                webiopi().refreshGPIO(true);
+        });
+                
+		function camOn() {
+		webiopi().callMacro("camOn");
+		window.location.reload(true);
+		}
 		
-        <title>Robot Control</title>
+		function camOff() {
+		webiopi().callMacro("camOff");
+		}
 		
- 
-    </script>
+		function nightOn() {
+		webiopi().digitalWrite(26, 1);
+		}
 		
+		function nightOff() {
+		webiopi().digitalWrite(26, 0);
+		}
 		
-		<style>
+        </script>
+        <style type="text/css">
+        
 		body {
-			overflow	: hidden;
-			padding		: 0;
-			margin		: 0;
-			background: #BBB url(http://192.168.0.14:8080/?action=stream) no-repeat center ;
-			background-size: cover;
-
+		overflow	: hidden;
+		padding		: 0;
+		margin		: 0;
+		background  : #BBB url(http://192.168.3.1:8080/?action=stream) no-repeat;
+		background-size : cover;
 		}				 
-		
-		
+				
 		 #zone_joystick1 {
 		 
 		 position : absolute;
@@ -77,7 +95,7 @@
 		
 		p {
 		 font-size: 20px;
-		 }
+		}
 		
 		/* The switch - the box around the slider */
 		.switch {
@@ -138,41 +156,52 @@
 		.slider.round:before {
 		  border-radius: 50%;
 		}
-		</style>
-
+        </style>
 </head>
-
 <body>
-
-
+       
 <div id="toggles">
 
 <div id="toggle">
 <p>Caméra : </p>
 <label class="switch">
-  <input type="checkbox">
+  <input type="checkbox" id="camSwitch" onchange="change(this)" checked>
   <div class="slider round"></div>
+  		<script type="text/javascript">
+		function change(slider) {
+			if (slider.checked) {
+				camOn()
+			} else {
+				camOff()
+			}
+		}
+		</script>
 </label>
 </div>
 
 <div id="toggle">
 <p>Nocturne : </p>
 <label class="switch">
-  <input type="checkbox">
+  <input type="checkbox" id="nightSwitch" onchange="changebis(this)">
   <div class="slider round"></div>
+    		<script type="text/javascript">
+		function changebis(slider) {
+			if (slider.checked) {
+				nightOff()
+			} else {
+				nightOn()
+			}
+		}
+		</script>
 </label>
 </div>
-
 </div>
 
 <div id="zone_joystick1"><div id="result_joystick1"></div></div>
 <div id="zone_joystick2"><div id="result_joystick2"></div></div>
 
-
-
 <script src="nipplejs.min.js"></script>
 <script>
-
 	// premier Joystick
 	var joystick1 = nipplejs.create({
 			zone: document.getElementById('zone_joystick1'),
@@ -186,7 +215,9 @@
 	{
 		joystick1.on('start move', function (evt, data) 
 	    {			
-	 		var position1 = data.distance;						
+
+			
+			var position1 = data.distance;						
 			var outputEl	= document.getElementById('result_joystick1');				
 			outputEl.innerHTML	= ' dy 1 : ' + position1; 			
 		})
@@ -195,7 +226,9 @@
 	joystick1.on('plain:down', function (evt, data) 
 	{
 		joystick1.on('start move', function (evt, data) 
-	    {			
+	    {	
+
+		
 	 		var position1 = - data.distance;						
 			var outputEl	= document.getElementById('result_joystick1');				
 			outputEl.innerHTML	= ' dy 1 : ' + position1; 			
@@ -204,11 +237,13 @@
 									
 	joystick1.on('end', function (evt, data) 
 	{
+
+	
 		var position1 = 0;
 		var outputEl	= document.getElementById('result_joystick1');				
 		outputEl.innerHTML	= ' dy 1 : ' + position1;		
 	});      
-
+ 
 	
 
 	// second Joystick	
@@ -223,7 +258,8 @@
     joystick2.on('plain:up', function (evt, data) 
 	{
 		joystick2.on('start move', function (evt, data) 
-	    {			
+	    {		
+		
 	 		var position2 = data.distance;						
 			var outputE2	= document.getElementById('result_joystick2');				
 			outputE2.innerHTML	= ' dy 2 : ' + position2; 			
@@ -249,6 +285,7 @@
 	
 </script>
 
-</body>
 
+</body>
 </html>
+

@@ -156,7 +156,7 @@ sudo make install
 Pour lancer la vidéo :
 
 ```
-cd mjpg-streamer-experimental
+cd mjpg-streamer/mjpg-streamer-experimental
 export LD_LIBRARY_PATH=.
 ./mjpg_streamer -o "output_http.so -w ./www" -i "input_raspicam.so"
 ```
