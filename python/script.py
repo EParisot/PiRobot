@@ -8,12 +8,18 @@ NIGHT = 26
 
 
 @webiopi.macro
-def camOn():	
+def camOn():		
 	subprocess.call('sudo service livestream.sh start', shell=True)		
+
 @webiopi.macro
 def camOff():
-    subprocess.call("sudo service livestream.sh stop", shell=True)
+	subprocess.call('sudo service livestream.sh stop', shell=True)
 
+@webiopi.macro
+def takeaPic():
+	picdate = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+	piccmd = 'wget http://192.168.3.1:8080/?action=snapshot -O /home/pi/Pictures/Photos/' + picdate + '.jpg'
+	subprocess.call(piccmd, shell=True)
 	
 	
 	
@@ -21,6 +27,7 @@ def camOff():
 def setup():
     # set the GPIO used	
     GPIO.setFunction(NIGHT, GPIO.OUT)
+
 
 # loop function is repeatedly called by WebIOPi 
 def loop():
