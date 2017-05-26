@@ -1,0 +1,12 @@
+# Edit the WebIOPi config file to reference this html files: 
+
+sudo nano /etc/webiopi/config
+
+
+# Stop the server:
+
+sudo service webiopi stop 
+
+# Restart the server: 
+
+sudo service webiopi start

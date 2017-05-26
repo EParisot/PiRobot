@@ -14,7 +14,6 @@
 			// create a "SWITCH" labeled button for GPIO 26
 			button = webiopi().createGPIOButton(26, "IR");
 			conteneur.append(button); // append button to content div
-				
 
          // Refresh GPIO buttons
          // pass true to refresh repeatedly of false to refresh once
@@ -60,10 +59,28 @@
 		}
 		
 		
+		//function Mot1dir(dir) {	
+		
+		//document.getElementById("display").innerHTML = dir;
+		
+		//webiopi().callMacro("Mot1dir", dir);
+		//}
+				
+		
+		function Mot1speed(speed1) {
+		
+		var speed = speed1/100;
+		webiopi().pulseRatio(5, speed);
+		}
+
+
+
+		
         </script>
+		
         <style type="text/css">
         
-		body {
+		 body {
 		overflow	: hidden;
 		padding		: 0;
 		margin		: 0;
@@ -71,63 +88,46 @@
 		background-size : cover;
 		}				 
 				
-		 #zone_joystick1 {
+		 #zone_joystick1 {		 
+		position : absolute;
+		bottom : 0px;
+		left : 0px;
+		width : 20%;
+		height : 60%;
+		border: 1px solid lime;
+		border-radius: 8px;
+		}
 		 
-		 position : absolute;
-		 bottom : 0px;
-		 left : 0px;
-		 width : 20%;
-		 height : 60%;
-		 border: 1px solid lime;
-		 border-radius: 8px;
-		 }
-		 
-		 #zone_joystick2 {
-		 
-		 position : absolute;
-		 bottom : 0px;
-		 right : 0px;
-		 width : 20%;
-		 height : 60%;
-		 border: 1px solid lime;
-		 border-radius: 8px;
-		 }
-		 
-		 #result_joystick1 {
-		 
-		 position : absolute;
-		 bottom : 0px;
-		 right : 0px;
-		 }
-		 
-		 #result_joystick2 {
-		 
-		 position : absolute;
-		 bottom : 0px;
-		 left : 0px;
-		 }
+		 #zone_joystick2 {		 
+		position : absolute;
+		bottom : 0px;
+		right : 0px;
+		width : 20%;
+		height : 60%;
+		border: 1px solid lime;
+		border-radius: 8px;
+		}
 		
-		 #display {
-		 
-		 display: flex; 
-		 flex-direction: column;
-		 justify-content: flex-end;
-		 align-items: flex-end;
-		 position : absolute;
-		 bottom : 0px;
-		 left : 30%;
-		 right : 30%;
-		 width : 40%;
-		 height: 40%;
-		 border: 1px solid lime;	
-		 border-radius: 8px;
+		 #display {		 
+		display: flex; 
+		flex-direction: column;
+		justify-content: flex-end;
+		align-items: flex-end;
+		position : absolute;
+		bottom : 0px;
+		left : 30%;
+		right : 30%;
+		width : 40%;
+		height: 40%;
+		border: 1px solid lime;	
+		border-radius: 8px;
 		}
 		
 		.toggles {
 		display: flex;		
 		}
 		
-		#btnCamPic {
+		 #btnCamPic {
 		width: 80px;
         height: 45px;
 		margin: 10px 5px 10px 10px;
@@ -135,9 +135,14 @@
 		border: 2px solid #333333;
         background: url(pic.png) no-repeat center; 
         background-size : contain;
+		}					
+		 #btnCamPic:active {
+		background-color: #2EFE2E;
+		}		
+		 #btnCamPic:focus {
 		}
 		
-		#btnCamOff {
+		 #btnCamOff {
 		width: 80px;
         height: 45px;
 		margin: 10px 5px 10px 10px;
@@ -145,18 +150,28 @@
 		border: 2px solid #333333;
         background: url(stop.png) no-repeat center; 
         background-size : contain;		
+		}			
+		 #btnCamOff:active {
+		background-color: #2EFE2E;
+		}		
+		 #btnCamOff:focus {
 		}
 		
-		#btnCamOn {
+		 #btnCamOn {
 		width: 80px;
         height: 45px;
 		margin: 10px 10px 10px 5px;
 		border-radius: 8px;
 		border: 2px solid #333333;
         background: url(play.png) no-repeat center; 
-        background-size : contain;	
-		
+        background-size : contain;			
+		}	
+		 #btnCamOn:active {
+		background-color: #2EFE2E;
+		}		
+		 #btnCamOn:focus {
 		}
+
 		
 		 button {
 		width: 80px;
@@ -164,17 +179,13 @@
 		margin: 10px 10px 10px 5px;
 		border-radius: 8px;
 		border: 2px solid #333333;
-		 }
-		
-		
-		 #gpio26.HIGH {
-		
+		}		 
+		 button:focus {
+		}				
+		 #gpio26.HIGH {		
 		background-color: transparent;
-
-		}
-		
-		 #gpio26.LOW {
-		
+		}	
+		 #gpio26.LOW {	
 		background-color: #2EFE2E;
 		}	
 
@@ -184,7 +195,7 @@
         background-size : contain;
         border: none;
 		position : absolute;
-		 top : 30%;
+		 top : 0%;
 		 width : 20%;
 		 height: 20%;
 		}		
@@ -194,9 +205,9 @@
         background-size : contain;
         border: none;
 		position : absolute;
-		 top : 30%;
-		 width : 20%;
-		 height: 20%;
+		 top : 0%;
+		 width : 30%;
+		 height: 30%;
 		}	
 		
 		#stopcamdialog {
@@ -204,9 +215,9 @@
         background-size : contain;
         border: none;
 		position : absolute;
-		 top : 30%;
-		 width : 20%;
-		 height: 20%;
+		 top : 0%;
+		 width : 30%;
+		 height: 30%;
 		}	
 		
         </style>
@@ -234,8 +245,8 @@
 </div>
 </div>
 
-<div id="zone_joystick1"><div id="result_joystick1"></div></div>
-<div id="zone_joystick2"><div id="result_joystick2"></div></div>
+<div id="zone_joystick1"></div>
+<div id="zone_joystick2"></div>
 
 <script src="nipplejs.min.js"></script>
 <script>
@@ -247,38 +258,32 @@
 			position: {left: '50%', top: '50%'},
 			color: 'lime'
 	});
-
-	joystick1.on('plain:up', function (evt, data) 
-	{
-		joystick1.on('start move', function (evt, data) 
-	    {			
-
-			
-			var position1 = data.distance;						
-			var outputEl	= document.getElementById('result_joystick1');				
-			outputEl.innerHTML	= ' dy 1 : ' + position1; 			
-		})
-	});
 	
-	joystick1.on('plain:down', function (evt, data) 
-	{
-		joystick1.on('start move', function (evt, data) 
-	    {	
-
-		
-	 		var position1 = - data.distance;						
-			var outputEl	= document.getElementById('result_joystick1');				
-			outputEl.innerHTML	= ' dy 1 : ' + position1; 			
-		})
+	
+	//joystick1.on('plain:up', function (evt, data) 
+	//{	
+		// set forward
+	//	Mot1dir(5);
+	
+	//});
+	
+	//joystick1.on('plain:down', function (evt, data) 
+	//{	
+		// set backward 
+	//	Mot1dir(6);
+	//});	
+	
+	joystick1.on('move', function (evt, data) 
+	{		
+		// set speed 
+		var speed1 = data.distance;	
+		Mot1speed(speed1);			
 	});
 									
 	joystick1.on('end', function (evt, data) 
-	{
-
-	
-		var position1 = 0;
-		var outputEl	= document.getElementById('result_joystick1');				
-		outputEl.innerHTML	= ' dy 1 : ' + position1;		
+	{		
+		var speed1 = 0;	
+		Mot1speed(speed1);	
 	});      
  
 	
@@ -290,36 +295,7 @@
 			size: 200,
 			position: {left: '50%', top: '50%'},
 			color: 'lime'
-	});
-	
-    joystick2.on('plain:up', function (evt, data) 
-	{
-		joystick2.on('start move', function (evt, data) 
-	    {		
-		
-	 		var position2 = data.distance;						
-			var outputE2	= document.getElementById('result_joystick2');				
-			outputE2.innerHTML	= ' dy 2 : ' + position2; 			
-		})
-	});
-	
-	joystick2.on('plain:down', function (evt, data) 
-	{
-		joystick2.on('start move', function (evt, data) 
-	    {			
-	 		var position2 = - data.distance;						
-			var outputE2	= document.getElementById('result_joystick2');				
-			outputE2.innerHTML	= ' dy 2 : ' + position2; 			
-		})
-	});
-		
-	joystick2.on('end', function (evt, data) 
-	{
-		var position2 = 0;
-		var outputE2	= document.getElementById('result_joystick2');				
-		outputE2.innerHTML	= ' dy 2 : ' + position2;		
-	});  
-	
+	});	
 </script>
 
 
