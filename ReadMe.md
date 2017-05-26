@@ -183,8 +183,6 @@ sudo service livestream.sh stop
 sudo service livestream.sh restart
 ```
 
-
-
 Installer un Dongle Wifi :
 --------------------------
 
@@ -362,7 +360,6 @@ redémarrez (sudo reboot)
 
 Tester avec et sans connexion, vous devriez garder accès à votre raspberry avec et sans le dongle sur 192.168.3.1
 Avec le dongle vous pouvez y accéder sur son IP locale ou Publique, les forwardings (type :8000 ou :8080) fonctionnent.
-
 
 
 Installer WebIOPi :
