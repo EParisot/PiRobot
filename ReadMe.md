@@ -373,9 +373,15 @@ Cela va nous permettre de créer notre interface et controler des ports GPIO.
 
 Commencez par installer WiringPi :
 
-***********************
-**********************
+```
+git clone git://git.drogon.net/wiringPi
+cd ~/wiringPi
+git pull origin
+./build
+```
 
+
+Puis WebIOPi :
 (https://github.com/doublebind/raspi)
 
 ```
@@ -397,7 +403,18 @@ Vous devriez tomber sur une interface listant vos ports Gpio (par défaut : user 
 Ajouter cette balise dans le Head de index.html : <meta name="mobile-web-app-capable" content="yes">
 
 Afin de controller les moteurs, nous allons utiliser un L298N Double pont H DC Driver.
-Nous allons voir tout ca avec le script Python mais pour l'instant, créons notre page web d'interface.
+Il faudra lui envoyer les infos de pilotage de moteurs sur 4 fils (2 moteurs, marche avant et marche arrière).
+
+Le signal envoyé sera de type PWM (Pulse With Modulation) de sorte que chaque pin/cable controle une direction par moteur, 
+avec modulation de la tention appliquée au moteur selon l'input des joystics.
+
+Après avoir longtemps galéré avec Webiopi et le Python (faire passer une variable numérique du javascript au python semble 
+compliqué...), j'ai finalement compris qu'il était possible de tout faire depuis le Javascript intégré dans la page Html
+(même gerer les pins en PWM !!)
+
+A ce stade, la vidéo, les photos et l'IR fonctionnent via macro dans le script python et tout le pilotage moteur dans le Javascript...
+Tout fonctionne...
+
 
 
 

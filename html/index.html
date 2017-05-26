@@ -58,24 +58,27 @@
 			dialog.close();		
 		}
 		
-		
-		//function Mot1dir(dir) {	
-		
-		//document.getElementById("display").innerHTML = dir;
-		
-		//webiopi().callMacro("Mot1dir", dir);
-		//}
 				
-		
-		function Mot1speed(speed1) {
-		
-		var speed = speed1/100;
-		webiopi().pulseRatio(5, speed);
+		var DIR1;	
+		function Mot1dir(dir) {			
+		DIR1 = dir;		
 		}
-
-
-
+					
+		function Mot1speed(speed1) {		
+		var Speed1 = speed1/100;
+		webiopi().pulseRatio(DIR1, Speed1);
+		}
 		
+		var DIR2;	
+		function Mot2dir(dir) {			
+		DIR2 = dir;		
+		}
+					
+		function Mot2speed(speed2) {		
+		var Speed2 = speed2/100;
+		webiopi().pulseRatio(DIR2, Speed2);
+		}
+	
         </script>
 		
         <style type="text/css">
@@ -92,20 +95,16 @@
 		position : absolute;
 		bottom : 0px;
 		left : 0px;
-		width : 20%;
-		height : 60%;
-		border: 1px solid lime;
-		border-radius: 8px;
+		width : 30%;
+		height : 100%;
 		}
 		 
 		 #zone_joystick2 {		 
 		position : absolute;
 		bottom : 0px;
 		right : 0px;
-		width : 20%;
-		height : 60%;
-		border: 1px solid lime;
-		border-radius: 8px;
+		width : 30%;
+		height : 100%;
 		}
 		
 		 #display {		 
@@ -119,8 +118,6 @@
 		right : 30%;
 		width : 40%;
 		height: 40%;
-		border: 1px solid lime;	
-		border-radius: 8px;
 		}
 		
 		.toggles {
@@ -250,28 +247,31 @@
 
 <script src="nipplejs.min.js"></script>
 <script>
-	// premier Joystick
+// premier Joystick
 	var joystick1 = nipplejs.create({
 			zone: document.getElementById('zone_joystick1'),
 			mode: 'static',
-			size: 200,
+			size: 300,
 			position: {left: '50%', top: '50%'},
-			color: 'lime'
+			color: 'lime',
+			threshold: 0.0
+	});
+		
+	joystick1.on('plain:up', function (evt, data) 
+	{	
+		Mot1dir(6);	
+		Mot1speed(0);			
+		// set forward
+		Mot1dir(5);	
 	});
 	
-	
-	//joystick1.on('plain:up', function (evt, data) 
-	//{	
-		// set forward
-	//	Mot1dir(5);
-	
-	//});
-	
-	//joystick1.on('plain:down', function (evt, data) 
-	//{	
+	joystick1.on('plain:down', function (evt, data) 
+	{			
+		Mot1dir(5);	
+		Mot1speed(0);	
 		// set backward 
-	//	Mot1dir(6);
-	//});	
+		Mot1dir(6);
+	});	
 	
 	joystick1.on('move', function (evt, data) 
 	{		
@@ -281,21 +281,52 @@
 	});
 									
 	joystick1.on('end', function (evt, data) 
-	{		
+	{	
+		// set PWM to 0
 		var speed1 = 0;	
 		Mot1speed(speed1);	
 	});      
  
 	
-
-	// second Joystick	
+// second Joystick	
 	var joystick2 = nipplejs.create({
 			zone: document.getElementById('zone_joystick2'),
 			mode: 'static',
-			size: 200,
+			size: 300,
 			position: {left: '50%', top: '50%'},
-			color: 'lime'
+			color: 'lime',
+			threshold: 0.0
 	});	
+			
+	joystick2.on('plain:up', function (evt, data) 
+	{	
+		Mot2dir(13);	
+		Mot2speed(0);			
+		// set forward
+		Mot2dir(12);	
+	});
+	
+	joystick2.on('plain:down', function (evt, data) 
+	{			
+		Mot2dir(12);	
+		Mot2speed(0);	
+		// set backward 
+		Mot2dir(13);
+	});	
+	
+	joystick2.on('move', function (evt, data) 
+	{		
+		// set speed 
+		var speed2 = data.distance;	
+		Mot2speed(speed2);			
+	});
+									
+	joystick2.on('end', function (evt, data) 
+	{	
+		// set PWM to 0
+		var speed2 = 0;	
+		Mot2speed(speed2);	
+	});  
 </script>
 
 
