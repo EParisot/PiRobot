@@ -45,14 +45,14 @@ Utilitaires Windows sur le PC :
 
 
 Installation Logicielle :
---------------------------
+-------------------------
 
-* Raspbian Jessie (impérativement la même version si vous utilisez l'écran 3.5 pouces...):
+Raspbian Jessie :
 
 -> RASPBIAN JESSIE WITH PIXEL Image with PIXEL desktop based on Debian Jessie
    Version:April 2017; Release date:2017-04-10; Kernel version:4.4
 
--> Installation classique (NE PAS MAJ avec apt-get update / upgrade si vous utilisez l'écran 3.5 pouces !)
+-> Installation classique
 
 
 
