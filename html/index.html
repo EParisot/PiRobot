@@ -67,6 +67,7 @@
 		function Mot1speed(speed1) {		
 		var Speed1 = speed1/100;
 		webiopi().pulseRatio(DIR1, Speed1);
+		webiopi().callMacro("distance");
 		}
 		
 		var DIR2;	
@@ -77,6 +78,7 @@
 		function Mot2speed(speed2) {		
 		var Speed2 = speed2/100;
 		webiopi().pulseRatio(DIR2, Speed2);
+		webiopi().callMacro("distance");
 		}
 	
         </script>
@@ -259,18 +261,18 @@
 		
 	joystick1.on('plain:up', function (evt, data) 
 	{	
-		Mot1dir(6);	
+		Mot1dir(3);	
 		Mot1speed(0);			
 		// set forward
-		Mot1dir(5);	
+		Mot1dir(2);	
 	});
 	
 	joystick1.on('plain:down', function (evt, data) 
 	{			
-		Mot1dir(5);	
+		Mot1dir(2);	
 		Mot1speed(0);	
 		// set backward 
-		Mot1dir(6);
+		Mot1dir(3);
 	});	
 	
 	joystick1.on('move', function (evt, data) 
@@ -300,18 +302,18 @@
 			
 	joystick2.on('plain:up', function (evt, data) 
 	{	
-		Mot2dir(13);	
+		Mot2dir(17);	
 		Mot2speed(0);			
 		// set forward
-		Mot2dir(12);	
+		Mot2dir(4);	
 	});
 	
 	joystick2.on('plain:down', function (evt, data) 
 	{			
-		Mot2dir(12);	
+		Mot2dir(4);	
 		Mot2speed(0);	
 		// set backward 
-		Mot2dir(13);
+		Mot2dir(17);
 	});	
 	
 	joystick2.on('move', function (evt, data) 
