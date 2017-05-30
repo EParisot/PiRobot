@@ -54,7 +54,31 @@ Raspbian Jessie :
 
 -> Installation classique
 
+-> Installer le serveur FTP
 
+```
+sudo apt-get install vsftpd
+
+sudo nano /etc/vsftpd.conf
+```
+
+changer :
+
+Anonymous_enabled=YES
+
+en
+
+Anonymous_enabled=NO
+
+Maintenant, enlevez le # devant les lignes suivantes :
+
+Local_enable = YES
+local_unmask=022
+Write_enabled=YES
+Ascii_upload_enabled=YES
+Ascii_download_enabled=YES
+
+Puis faites [ctrl] + [x] puis [o] puis [Entrée]
 
 Installer la Caméra :
 ---------------------
@@ -75,12 +99,13 @@ Nous allons avoir besoin de streamer la vidéo vers une interface web, pour cela 
 
 ```
 sudo apt-get install cmake libjpeg8-dev
-cd mjpg-streamer-experimental
-make
+sudo git clone https://github.com/jacksonliam/mjpg-streamer
+cd mjpg-streamer/mjpg-streamer-experimental
+sudo make
 sudo make install
 ```
 
-Pour lancer la vidéo :
+Pour lancer la vidéo (a tester avant d'aller plus loin) :
 
 ```
 cd mjpg-streamer/mjpg-streamer-experimental
@@ -98,7 +123,7 @@ Pour déplacer le dossier d'installation :
 
 ````
 sudo cp mjpg_streamer /usr/local/bin
-sudo cp output_http.so input_file.so input_uvc.so /usr/local/lib/
+sudo cp output_http.so input_file.so input_uvc.so input_raspicam.so /usr/local/lib/
 sudo cp -R www /usr/local/www
 ```
 
@@ -130,7 +155,7 @@ f_message(){
 case "$1" in
         start)
                 f_message "Starting mjpg_streamer"
-                /usr/local/bin/mjpg_streamer -b -i "/usr/local/lib/?????/input_raspicam.so -r 1280x720" -o "/usr/local/lib/output_http.so -w /usr/local/www -c username:password"
+                /usr/local/bin/mjpg_streamer -b -i "/usr/local/lib/input_raspicam.so -r 1280x720" -o "/usr/local/lib/output_http.so -w /usr/local/www"
                 sleep 2
                 f_message "mjpg_streamer started"
                 ;;
@@ -142,7 +167,7 @@ case "$1" in
         restart)
                 f_message "Restarting daemon: mjpg_streamer"
                 killall mjpg_streamer
-                /usr/local/bin/mjpg_streamer -b -i "/usr/local/lib/?????/input_raspicam.so -r 1280x720" -o "/usr/local/lib/output_http.so -w /usr/local/www -c username:password"
+                /usr/local/bin/mjpg_streamer -b -i "/usr/local/lib/input_raspicam.so -r 1280x720" -o "/usr/local/lib/output_http.so -w /usr/local/www"
                 sleep 2
                 f_message "Restarted daemon: mjpg_streamer"
                 ;;
@@ -253,13 +278,14 @@ Faites de l'interface wlan0 l'interface par défaut sur serveur DHCP :
 sudo nano /etc/default/isc-dhcp-server
 ```
 
-Changez INTERFACES="" en "NTERFACES="wlan0"
+Changez INTERFACES="" en INTERFACES="wlan0"
 
 Sauvez, Quittez.
 
 Relancez le serveur DHCP :
 
 ```
+
 sudo service isc-dhcp-server restart
 ```
 

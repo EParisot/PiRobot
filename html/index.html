@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta name="mobile-web-app-capable" content="yes">
@@ -8,7 +7,7 @@
      <script type="text/javascript">
         webiopi().ready(function() {
 
-			var button, conteneur;			
+			var button, conteneur ;			
 			conteneur = $("#togglescam")
 			
 			// create a "SWITCH" labeled button for GPIO 26
@@ -17,7 +16,7 @@
 
          // Refresh GPIO buttons
          // pass true to refresh repeatedly of false to refresh once
-        webiopi().refreshGPIO(true);
+        webiopi().refreshGPIO(false);
         });
 		
 		function sleep(ms) {
@@ -58,28 +57,69 @@
 			dialog.close();		
 		}
 		
-				
-		var DIR1;	
-		function Mot1dir(dir) {			
-		DIR1 = dir;		
+					
+		function Mot1dirA() {				
+			webiopi().digitalWrite(19, 0);
+			webiopi().digitalWrite(13, 1);
+		}
+		
+		function Mot1dirB() {				
+			webiopi().digitalWrite(13, 0);
+			webiopi().digitalWrite(19, 1);
 		}
 					
 		function Mot1speed(speed1) {		
-		var Speed1 = speed1/100;
-		webiopi().pulseRatio(DIR1, Speed1);
-		webiopi().callMacro("distance");
+			var Speed1 = speed1/100;
+			webiopi().pulseRatio(12, Speed1);
 		}
 		
-		var DIR2;	
-		function Mot2dir(dir) {			
-		DIR2 = dir;		
+		function Mot1stop() {			
+			webiopi().digitalWrite(19, 1);
+			webiopi().digitalWrite(13, 1);
+			webiopi().pulseRatio(12, 1);
+		}
+			
+		function Mot2dirA() {			
+			webiopi().digitalWrite(21, 0);
+			webiopi().digitalWrite(20, 1);
+		}
+		
+		function Mot2dirB() {			
+			webiopi().digitalWrite(20, 0);
+			webiopi().digitalWrite(21, 1);
 		}
 					
 		function Mot2speed(speed2) {		
-		var Speed2 = speed2/100;
-		webiopi().pulseRatio(DIR2, Speed2);
-		webiopi().callMacro("distance");
+			var Speed2 = speed2/100;
+			webiopi().pulseRatio(16, Speed2);
 		}
+		
+		function Mot2stop() {			
+			webiopi().digitalWrite(21, 1);
+			webiopi().digitalWrite(20, 1);
+			webiopi().pulseRatio(16, 1);
+		}
+		
+		
+		
+		function callMacro_Temp(){
+			var arg0 = [0];
+            webiopi().callMacro("Temp", arg0, macro_Temp_Callback);
+		}
+
+        function macro_Temp_Callback(macro, arg0, data){
+           temp = data.split(" ")[0];			
+			if (temp <= 80)
+				document.getElementById("temp").style.color = "white"
+			else
+				document.getElementById("temp").style.color = "red"
+				
+			document.getElementById("temp").innerHTML = "= " + temp + " °C";
+		}
+		
+		window.onload = callMacro_Temp;
+		var repeat = setInterval ("callMacro_Temp()", 10000);
+		
 	
         </script>
 		
@@ -99,6 +139,7 @@
 		left : 0px;
 		width : 30%;
 		height : 100%;
+		border : solid 1px lime;
 		}
 		 
 		 #zone_joystick2 {		 
@@ -107,19 +148,70 @@
 		right : 0px;
 		width : 30%;
 		height : 100%;
+		border : solid 1px lime;
 		}
 		
 		 #display {		 
-		display: flex; 
-		flex-direction: column;
-		justify-content: flex-end;
-		align-items: flex-end;
 		position : absolute;
 		bottom : 0px;
 		left : 30%;
 		right : 30%;
 		width : 40%;
 		height: 40%;
+		}
+		
+		#actions {
+		flex-direction: column;
+		justify-content: flex-end;
+		align-items: flex-end;
+		position : absolute;
+		right : 0px;
+		bottom : 0px;
+		}
+		
+		#actionsbis {
+		flex-direction: column;
+		justify-content: flex-end;
+		align-items: flex-end;
+		position : absolute;
+		left : 0px;
+		bottom : 0px;
+		}
+		
+		#infos {
+		flex-direction: column;
+		justify-content: flex-end;
+		align-items: flex-end;
+		width: 40%;
+        height: 30%;
+		border-radius: 8px;
+		border: 2px solid lime;
+		position : absolute;
+		left : 0px;
+		top : 0px;
+		}
+		
+		#tempdiv {
+		display: flex;
+		justify-content: space_between;
+		width: 100%;
+        height: 20%;
+		}
+		
+		#thermo {
+		width: 60px;
+        height: 60px;
+        background: url(thermo.png) no-repeat center; 
+        background-size : contain;
+		}
+		
+		#temp {
+		font-size: 25px;
+		font-color: white;
+		position : relative;
+		left : 0%;
+		top : 0px;
+		margin-top : 10px;
 		}
 		
 		.toggles {
@@ -209,16 +301,6 @@
 		 height: 30%;
 		}	
 		
-		#stopcamdialog {
-		background: url(stop.png) no-repeat center; 
-        background-size : contain;
-        border: none;
-		position : absolute;
-		 top : 0%;
-		 width : 30%;
-		 height: 30%;
-		}	
-		
         </style>
 </head>
 <body>
@@ -233,14 +315,28 @@
 <dialog id="startcamdialog">   
 </dialog> 
 <dialog id="stopcamdialog">   
-</dialog> 
+</dialog>
 
+
+
+<div id="infos">
+<div id="tempdiv">
+<img id="thermo"></button><div id="temp"></div>
+</div>
+</div>
+
+<div id="actionsbis">
+<div id="togglesbis" class="toggles"></div>
+</div>
+
+<div id="actions">
 <div id="togglescam" class="toggles">
 <button type="button" id="btnCamPic" onclick="fctCamPic()">
 </div>
 <div class="toggles">
 <button type="button" id="btnCamOff" onclick="fctCamOff()">
 <button type="button" id="btnCamOn" onclick="fctCamOn()">
+</div>
 </div>
 </div>
 
@@ -253,26 +349,22 @@
 	var joystick1 = nipplejs.create({
 			zone: document.getElementById('zone_joystick1'),
 			mode: 'static',
-			size: 300,
-			position: {left: '50%', top: '50%'},
+			size: 250,
+			position: {left: '50%', top: '70%'},
 			color: 'lime',
 			threshold: 0.0
 	});
 		
 	joystick1.on('plain:up', function (evt, data) 
-	{	
-		Mot1dir(3);	
-		Mot1speed(0);			
-		// set forward
-		Mot1dir(2);	
+	{		
+		// set forward 
+		Mot1dirA();				
 	});
 	
 	joystick1.on('plain:down', function (evt, data) 
-	{			
-		Mot1dir(2);	
-		Mot1speed(0);	
+	{	
 		// set backward 
-		Mot1dir(3);
+		Mot1dirB();
 	});	
 	
 	joystick1.on('move', function (evt, data) 
@@ -284,9 +376,8 @@
 									
 	joystick1.on('end', function (evt, data) 
 	{	
-		// set PWM to 0
-		var speed1 = 0;	
-		Mot1speed(speed1);	
+		// set PWM to 0	
+		Mot1stop();	
 	});      
  
 	
@@ -294,26 +385,22 @@
 	var joystick2 = nipplejs.create({
 			zone: document.getElementById('zone_joystick2'),
 			mode: 'static',
-			size: 300,
-			position: {left: '50%', top: '50%'},
+			size: 250,
+			position: {left: '50%', top: '70%'},
 			color: 'lime',
 			threshold: 0.0
 	});	
 			
 	joystick2.on('plain:up', function (evt, data) 
 	{	
-		Mot2dir(17);	
-		Mot2speed(0);			
-		// set forward
-		Mot2dir(4);	
+		//set forward
+		Mot2dirA();	
 	});
 	
 	joystick2.on('plain:down', function (evt, data) 
-	{			
-		Mot2dir(4);	
-		Mot2speed(0);	
+	{		
 		// set backward 
-		Mot2dir(17);
+		Mot2dirB();
 	});	
 	
 	joystick2.on('move', function (evt, data) 
@@ -326,8 +413,7 @@
 	joystick2.on('end', function (evt, data) 
 	{	
 		// set PWM to 0
-		var speed2 = 0;	
-		Mot2speed(speed2);	
+		Mot2stop();	
 	});  
 </script>
 
