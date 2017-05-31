@@ -120,6 +120,22 @@
 		window.onload = callMacro_Temp;
 		var repeat = setInterval ("callMacro_Temp()", 10000);
 		
+//		async function fctGoogleOn() {
+//			//webiopi().callMacro('GoogleOn');
+//			var dialog = document.getElementById('startGoogledialog');  		
+//			dialog.show();
+//			await sleep(1000);
+//			dialog.close();
+//		}
+//		
+//		async function fctGoogleOff() {
+//			//webiopi().callMacro('GoogleOff');
+//			var dialog = document.getElementById('stopGoogledialog');  		
+//			dialog.show();
+//			await sleep(1000);
+//			dialog.close();
+//		}
+		
 	
         </script>
 		
@@ -191,6 +207,10 @@
 		top : 0px;
 		}
 		
+		.toggles {
+		display: flex;		
+		}
+		
 		#tempdiv {
 		display: flex;
 		justify-content: space_between;
@@ -214,9 +234,36 @@
 		margin-top : 10px;
 		}
 		
-		.toggles {
-		display: flex;		
+	<!-- 	#btnGoogleOff {
+		width: 80px;
+        height: 45px;
+		margin: 10px 10px 10px 5px;
+		border-radius: 8px;
+		border: 2px solid #333333;
+        background: url(GoogleOff.png) no-repeat center; 
+        background-size : contain;		
+		}			
+		 #btnCamOff:active {
+		background-color: #2EFE2E;
+		}		
+		 #btnCamOff:focus {
 		}
+		
+		 #btnGoogleOn {
+		width: 80px;
+        height: 45px;
+		margin: 10px 5px 10px 10px;
+		border-radius: 8px;
+		border: 2px solid #333333;
+        background: url(GoogleOn.png) no-repeat center; 
+        background-size : contain;			
+		}	
+		 #btnCamOn:active {
+		background-color: #2EFE2E;
+		}		
+		 #btnCamOn:focus {
+		} -->
+		
 		
 		 #btnCamPic {
 		width: 80px;
@@ -236,7 +283,7 @@
 		 #btnCamOff {
 		width: 80px;
         height: 45px;
-		margin: 10px 5px 10px 10px;
+		margin: 10px 10px 10px 5px;
 		border-radius: 8px;
 		border: 2px solid #333333;
         background: url(stop.png) no-repeat center; 
@@ -251,7 +298,7 @@
 		 #btnCamOn {
 		width: 80px;
         height: 45px;
-		margin: 10px 10px 10px 5px;
+		margin: 10px 5px 10px 10px;
 		border-radius: 8px;
 		border: 2px solid #333333;
         background: url(play.png) no-repeat center; 
@@ -262,7 +309,6 @@
 		}		
 		 #btnCamOn:focus {
 		}
-
 		
 		 button {
 		width: 80px;
@@ -301,6 +347,36 @@
 		 height: 30%;
 		}	
 		
+		#stopcamdialog {
+		background: url(stop.png) no-repeat center; 
+        background-size : contain;
+        border: none;
+		position : absolute;
+		 top : 0%;
+		 width : 30%;
+		 height: 30%;
+		}	
+		
+		#startGoogledialog {
+		background: url(GoogleOn.png) no-repeat center; 
+        background-size : contain;
+        border: none;
+		position : absolute;
+		 top : 0%;
+		 width : 30%;
+		 height: 30%;
+		}	
+		
+		#stopGoogledialog {
+		background: url(GoogleOff.png) no-repeat center; 
+        background-size : contain;
+        border: none;
+		position : absolute;
+		 top : 0%;
+		 width : 30%;
+		 height: 30%;
+		}	
+		
         </style>
 </head>
 <body>
@@ -316,6 +392,10 @@
 </dialog> 
 <dialog id="stopcamdialog">   
 </dialog>
+<!-- <dialog id="startGoogledialog">   
+</dialog> 
+<dialog id="stopGoogledialog">   
+</dialog> -->
 
 
 
@@ -326,7 +406,10 @@
 </div>
 
 <div id="actionsbis">
-<div id="togglesbis" class="toggles"></div>
+<div id="togglesbis" class="toggles">
+<!-- <button type="button" id="btnGoogleOn" onclick="fctGoogleOn()">
+<button type="button" id="btnGoogleOff" onclick="fctGoogleOff()"> -->
+</div>
 </div>
 
 <div id="actions">
@@ -334,8 +417,8 @@
 <button type="button" id="btnCamPic" onclick="fctCamPic()">
 </div>
 <div class="toggles">
-<button type="button" id="btnCamOff" onclick="fctCamOff()">
 <button type="button" id="btnCamOn" onclick="fctCamOn()">
+<button type="button" id="btnCamOff" onclick="fctCamOff()">
 </div>
 </div>
 </div>

@@ -217,7 +217,7 @@ L'interface wlan0 sera le point d'accès pour le smartphone qui va piloter le tou
 L'interface supplémentaire (dongle) wlan1 sera l'accès Internet.
 
 Avant tout branchez le dongle, attribuez lui une IP fixe dans votre Box et routez le port TCP 8000 dessus.
-Dans mon exemple 192.168.0.14
+Dans mon exemple 192.168.3.1
 
 nous allons maintenant configurer l'interface wlan0 :
 
