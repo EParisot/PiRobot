@@ -1,6 +1,6 @@
-$ source env/bin/activate
+source env/bin/activate
 
 
-(env) $ cd /home/pi/assistant-sdk-python/google-assistant-sdk/googles
+cd /home/pi/assistant-sdk-python/google-assistant-sdk/googles
 amples/assistant/library
-(env) $ python -m hotword
+python -m hotword

@@ -63,8 +63,8 @@
 			webiopi().digitalWrite(13, 1);
 		}
 		
-		function Mot1dirB() {				
-			webiopi().digitalWrite(13, 0);
+		function Mot1dirB() {			
+			webiopi().digitalWrite(13, 0);		
 			webiopi().digitalWrite(19, 1);
 		}
 					
@@ -74,18 +74,17 @@
 		}
 		
 		function Mot1stop() {			
-			webiopi().digitalWrite(19, 1);
-			webiopi().digitalWrite(13, 1);
-			webiopi().pulseRatio(12, 1);
+			webiopi().digitalWrite(19, 0);
+			webiopi().digitalWrite(13, 0);     
 		}
 			
-		function Mot2dirA() {			
+		function Mot2dirA() {
 			webiopi().digitalWrite(21, 0);
 			webiopi().digitalWrite(20, 1);
 		}
 		
-		function Mot2dirB() {			
-			webiopi().digitalWrite(20, 0);
+		function Mot2dirB() {		
+			webiopi().digitalWrite(20, 0);		
 			webiopi().digitalWrite(21, 1);
 		}
 					
@@ -95,9 +94,8 @@
 		}
 		
 		function Mot2stop() {			
-			webiopi().digitalWrite(21, 1);
-			webiopi().digitalWrite(20, 1);
-			webiopi().pulseRatio(16, 1);
+			webiopi().digitalWrite(21, 0);
+			webiopi().digitalWrite(20, 0);      		
 		}
 		
 		
@@ -116,9 +114,37 @@
 				
 			document.getElementById("temp").innerHTML = "= " + temp + " °C";
 		}
+				
 		
-		window.onload = callMacro_Temp;
-		var repeat = setInterval ("callMacro_Temp()", 10000);
+//		function callMacro_Dist(){
+//		var arg0 = [0];
+//      webiopi().callMacro("Dist", arg0, macro_Dist_Callback);
+//		}
+		
+//		function macro_Dist_Callback(macro, arg0, data){
+//			dist = data;					
+//			if (dist < 0.3){
+//				webiopi().digitalWrite(18, 0)
+//				webiopi().digitalWrite(23, 0)
+//				webiopi().digitalWrite(24, 1)					
+//			}else if (dist < 0.5){
+//				webiopi().digitalWrite(18, 0)
+//				webiopi().digitalWrite(24, 0)
+//				webiopi().digitalWrite(23, 1)
+//			}else {
+//				webiopi().digitalWrite(23, 0)
+//				webiopi().digitalWrite(24, 0)
+//				webiopi().digitalWrite(18, 1)
+//			}
+//		}
+		
+		
+		window.onload = function(){
+			callMacro_Temp();
+			//callMacro_Dist();
+		};
+		var repeatTemp = setInterval ("callMacro_Temp()", 10000);
+		//var repeatDist = setInterval ("callMacro_Dist()", 100);
 		
 //		async function fctGoogleOn() {
 //			//webiopi().callMacro('GoogleOn');
