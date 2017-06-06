@@ -25,6 +25,9 @@ led3 = 18
 global temp
 
 
+@webiopi.macro
+def GoogleOn():		
+	subprocess.Popen(["/bin/bash", "/home/pi/GA.sh"])
 
 
 @webiopi.macro

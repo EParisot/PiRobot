@@ -25,14 +25,13 @@
 	
 		async function fctCamOn() {
 			var dialog = document.getElementById('startcamdialog');  
-			dialog.show();
+			dialog.show();			
+			webiopi().callMacro("camOn");				
+			await sleep(1000);
 			
-			webiopi().callMacro("camOn");	
+			dialog.close(); 	
+			window.location.reload(true);
 			
-			await sleep(1000);			
-			dialog.close();
-			
-			window.location.reload(true); 	
 		}
 		
 		async function fctCamOff() {
@@ -107,60 +106,51 @@
 
         function macro_Temp_Callback(macro, arg0, data){
            temp = data.split(" ")[0];			
-			if (temp <= 80)
-				document.getElementById("temp").style.color = "white"
+			if (temp <= 60)
+				document.getElementById("temp").style.color = "lime"
 			else
 				document.getElementById("temp").style.color = "red"
 				
 			document.getElementById("temp").innerHTML = "= " + temp + " °C";
 		}
-				
-		
-//		function callMacro_Dist(){
-//		var arg0 = [0];
-//      webiopi().callMacro("Dist", arg0, macro_Dist_Callback);
-//		}
-		
-//		function macro_Dist_Callback(macro, arg0, data){
-//			dist = data;					
-//			if (dist < 0.3){
-//				webiopi().digitalWrite(18, 0)
-//				webiopi().digitalWrite(23, 0)
-//				webiopi().digitalWrite(24, 1)					
-//			}else if (dist < 0.5){
-//				webiopi().digitalWrite(18, 0)
-//				webiopi().digitalWrite(24, 0)
-//				webiopi().digitalWrite(23, 1)
-//			}else {
-//				webiopi().digitalWrite(23, 0)
-//				webiopi().digitalWrite(24, 0)
-//				webiopi().digitalWrite(18, 1)
-//			}
-//		}
 		
 		
-		window.onload = function(){
+	window.onload = function(){
 			callMacro_Temp();
-			//callMacro_Dist();
-		};
-		var repeatTemp = setInterval ("callMacro_Temp()", 10000);
-		//var repeatDist = setInterval ("callMacro_Dist()", 100);
+	};
+	var repeatTemp = setInterval ("callMacro_Temp()", 10000);
 		
-//		async function fctGoogleOn() {
-//			//webiopi().callMacro('GoogleOn');
+	
+//	async function fctGoogleOn() {
+//			webiopi().callMacro('GoogleOn');
 //			var dialog = document.getElementById('startGoogledialog');  		
 //			dialog.show();
 //			await sleep(1000);
 //			dialog.close();
 //		}
 //		
-//		async function fctGoogleOff() {
-//			//webiopi().callMacro('GoogleOff');
+//	async function fctGoogleOff() {
+//			webiopi().callMacro('GoogleOff');
 //			var dialog = document.getElementById('stopGoogledialog');  		
 //			dialog.show();
 //			await sleep(1000);
 //			dialog.close();
 //		}
+
+	async function fctDistOn(){
+		webiopi().callMacro("DistOn");
+			var dialog = document.getElementById('startDistdialog');  		
+			dialog.show();
+			await sleep(1000);
+			dialog.close();
+		}
+	async function fctDistOff(){
+		webiopi().callMacro("DistOff");
+			var dialog = document.getElementById('stopDistdialog');  		
+			dialog.show();
+			await sleep(1000);
+			dialog.close();
+		}
 		
 	
         </script>
@@ -226,8 +216,6 @@
 		align-items: flex-end;
 		width: 40%;
         height: 30%;
-		border-radius: 8px;
-		border: 2px solid lime;
 		position : absolute;
 		left : 0px;
 		top : 0px;
@@ -241,64 +229,92 @@
 		display: flex;
 		justify-content: space_between;
 		width: 100%;
-        height: 20%;
+        	height: 20%;
 		}
 		
 		#thermo {
 		width: 60px;
-        height: 60px;
-        background: url(thermo.png) no-repeat center; 
-        background-size : contain;
+        	height: 60px;
+        	background: url(thermo.png) no-repeat center; 
+        	background-size : contain;
 		}
 		
 		#temp {
 		font-size: 25px;
-		font-color: white;
 		position : relative;
 		left : 0%;
 		top : 0px;
 		margin-top : 10px;
 		}
 		
-	<!-- 	#btnGoogleOff {
+<!-- 	 	#btnGoogleOff {
 		width: 80px;
-        height: 45px;
+        	height: 45px;
 		margin: 10px 10px 10px 5px;
 		border-radius: 8px;
 		border: 2px solid #333333;
-        background: url(GoogleOff.png) no-repeat center; 
-        background-size : contain;		
+        	background: url(GoogleOff.png) no-repeat center; 
+        	background-size : contain;		
 		}			
-		 #btnCamOff:active {
+		 #btnGoogleOff:active {
 		background-color: #2EFE2E;
 		}		
-		 #btnCamOff:focus {
+		 #btnGoogleOff:focus {
 		}
 		
 		 #btnGoogleOn {
 		width: 80px;
-        height: 45px;
+        	height: 45px;
 		margin: 10px 5px 10px 10px;
 		border-radius: 8px;
 		border: 2px solid #333333;
-        background: url(GoogleOn.png) no-repeat center; 
-        background-size : contain;			
+        	background: url(GoogleOn.png) no-repeat center; 
+        	background-size : contain;			
 		}	
-		 #btnCamOn:active {
+		 #btnGoogleOn:active {
 		background-color: #2EFE2E;
 		}		
-		 #btnCamOn:focus {
-		} -->
+		 #btnGoogleOn:focus {
+		}       -->                        
 		
+		#btnDistOff {
+		width: 80px;
+        	height: 45px;
+		margin: 10px 10px 10px 5px;
+		border-radius: 8px;
+		border: 2px solid #333333;
+        	background: url(distOff.png) no-repeat center; 
+        	background-size : contain;		
+		}			
+		 #btnDistOff:active {
+		background-color: #2EFE2E;
+		}		
+		 #btnDistOff:focus {
+		}
+		
+		 #btnDistOn {
+		width: 80px;
+        	height: 45px;
+		margin: 10px 5px 10px 10px;
+		border-radius: 8px;
+		border: 2px solid #333333;
+        	background: url(distOn.png) no-repeat center; 
+        	background-size : contain;			
+		}	
+		 #btnDistOn:active {
+		background-color: #2EFE2E;
+		}		
+		 #btnDistOn:focus {
+		}
 		
 		 #btnCamPic {
 		width: 80px;
-        height: 45px;
+        	height: 45px;
 		margin: 10px 5px 10px 10px;
 		border-radius: 8px;
 		border: 2px solid #333333;
-        background: url(pic.png) no-repeat center; 
-        background-size : contain;
+        	background: url(pic.png) no-repeat center; 
+        	background-size : contain;
 		}					
 		 #btnCamPic:active {
 		background-color: #2EFE2E;
@@ -308,12 +324,12 @@
 		
 		 #btnCamOff {
 		width: 80px;
-        height: 45px;
+        	height: 45px;
 		margin: 10px 10px 10px 5px;
 		border-radius: 8px;
 		border: 2px solid #333333;
-        background: url(stop.png) no-repeat center; 
-        background-size : contain;		
+        	background: url(stop.png) no-repeat center; 
+        	background-size : contain;		
 		}			
 		 #btnCamOff:active {
 		background-color: #2EFE2E;
@@ -323,12 +339,12 @@
 		
 		 #btnCamOn {
 		width: 80px;
-        height: 45px;
+        	height: 45px;
 		margin: 10px 5px 10px 10px;
 		border-radius: 8px;
 		border: 2px solid #333333;
-        background: url(play.png) no-repeat center; 
-        background-size : contain;			
+        	background: url(play.png) no-repeat center; 
+        	background-size : contain;			
 		}	
 		 #btnCamOn:active {
 		background-color: #2EFE2E;
@@ -338,7 +354,7 @@
 		
 		 button {
 		width: 80px;
-        height: 45px;
+        	height: 45px;
 		margin: 10px 10px 10px 5px;
 		border-radius: 8px;
 		border: 2px solid #333333;
@@ -347,16 +363,18 @@
 		}				
 		 #gpio26.HIGH {		
 		background-color: transparent;
+		color: lime;
 		}	
 		 #gpio26.LOW {	
 		background-color: #2EFE2E;
+		color: black;
 		}	
 
 
 		#picdialog {
 		background: url(pic.png) no-repeat center; 
-        background-size : contain;
-        border: none;
+        	background-size : contain;
+        	border: none;
 		position : absolute;
 		 top : 0%;
 		 width : 20%;
@@ -365,8 +383,8 @@
 		
 		#startcamdialog {
 		background: url(play.png) no-repeat center; 
-        background-size : contain;
-        border: none;
+        	background-size : contain;
+        	border: none;
 		position : absolute;
 		 top : 0%;
 		 width : 30%;
@@ -375,28 +393,28 @@
 		
 		#stopcamdialog {
 		background: url(stop.png) no-repeat center; 
-        background-size : contain;
-        border: none;
+        	background-size : contain;
+        	border: none;
 		position : absolute;
 		 top : 0%;
 		 width : 30%;
 		 height: 30%;
 		}	
 		
-		#startGoogledialog {
-		background: url(GoogleOn.png) no-repeat center; 
-        background-size : contain;
-        border: none;
+		#startDistdialog {
+		background: url(distOn.png) no-repeat center; 
+        	background-size : contain;
+        	border: none;
 		position : absolute;
 		 top : 0%;
 		 width : 30%;
 		 height: 30%;
 		}	
 		
-		#stopGoogledialog {
-		background: url(GoogleOff.png) no-repeat center; 
-        background-size : contain;
-        border: none;
+		#stopDistdialog {
+		background: url(distOff.png) no-repeat center; 
+        	background-size : contain;
+        	border: none;
 		position : absolute;
 		 top : 0%;
 		 width : 30%;
@@ -418,6 +436,10 @@
 </dialog> 
 <dialog id="stopcamdialog">   
 </dialog>
+<dialog id="startDistdialog">   
+</dialog> 
+<dialog id="stopDistdialog">   
+</dialog>
 <!-- <dialog id="startGoogledialog">   
 </dialog> 
 <dialog id="stopGoogledialog">   
@@ -433,9 +455,13 @@
 
 <div id="actionsbis">
 <div id="togglesbis" class="toggles">
-<!-- <button type="button" id="btnGoogleOn" onclick="fctGoogleOn()">
-<button type="button" id="btnGoogleOff" onclick="fctGoogleOff()"> -->
+<button type="button" id="btnDistOn" onclick="fctDistOn()">
+<button type="button" id="btnDistOff" onclick="fctDistOff()">
 </div>
+<!-- <div class="toggles">
+<button type="button" id="btnGoogleOn" onclick="fctGoogleOn()">
+<button type="button" id="btnGoogleOff" onclick="fctGoogleOff()">
+</div> -->
 </div>
 
 <div id="actions">
@@ -458,7 +484,7 @@
 	var joystick1 = nipplejs.create({
 			zone: document.getElementById('zone_joystick1'),
 			mode: 'static',
-			size: 250,
+			size: 300,
 			position: {left: '50%', top: '70%'},
 			color: 'lime',
 			threshold: 0.0
@@ -494,7 +520,7 @@
 	var joystick2 = nipplejs.create({
 			zone: document.getElementById('zone_joystick2'),
 			mode: 'static',
-			size: 250,
+			size: 300,
 			position: {left: '50%', top: '70%'},
 			color: 'lime',
 			threshold: 0.0
