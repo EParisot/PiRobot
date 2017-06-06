@@ -155,7 +155,7 @@ f_message(){
 case "$1" in
         start)
                 f_message "Starting mjpg_streamer"
-                /usr/local/bin/mjpg_streamer -b -i "/usr/local/lib/mjpg-streamer/input_raspicam.so -r 1280x720" -o "/usr/local/lib/output_http.so -w /usr/local/www"
+                /usr/local/bin/mjpg_streamer -b -i "/usr/local/lib/mjpg-streamer/input_raspicam.so -x 640 -y 480 -rot 180 "  -o "/usr/local/lib/output_http.so -w /usr/local/www"
                 sleep 2
                 f_message "mjpg_streamer started"
                 ;;
@@ -167,7 +167,7 @@ case "$1" in
         restart)
                 f_message "Restarting daemon: mjpg_streamer"
                 killall mjpg_streamer
-                /usr/local/bin/mjpg_streamer -b -i "/usr/local/lib/mjpg-streamer/input_raspicam.so -r 1280x720" -o "/usr/local/lib/output_http.so -w /usr/local/www"
+                /usr/local/bin/mjpg_streamer -b -i "/usr/local/lib/mjpg-streamer/input_raspicam.so -x 640 -y 480 -rot 180 " -o "/usr/local/lib/output_http.so -w /usr/local/www"
                 sleep 2
                 f_message "Restarted daemon: mjpg_streamer"
                 ;;
@@ -371,7 +371,7 @@ Ajouter cette balise dans le Head de index.html : <meta name="mobile-web-app-cap
 Afin de controller les moteurs, nous allons utiliser un L298N Double pont H DC Driver.
 Il faudra lui envoyer les infos de pilotage de moteurs sur 4 fils (2 moteurs, marche avant et marche arrière).
 
-Le signal envoyé sera de type PWM (Pulse With Modulation) de sorte que chaque pin/cable controle une direction par moteur, 
+Le signal envoyé sera de type PWM (Pulse With Modulation) pour la vitesse + GPIO pour activer les directions de sorte que chaque pin/cable controle une direction par moteur, 
 avec modulation de la tention appliquée au moteur selon l'input des joystics.
 
 Après avoir longtemps galéré avec Webiopi et le Python (faire passer une variable numérique du javascript au python semble 
