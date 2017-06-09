@@ -443,6 +443,20 @@ Afin de profiter des immenses possibilités du SDK Google Assistant, et parceque 
 
 https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/config-dev-project-and-account
 
+Pour le démarrer au Boot, copiez le script GA.sh dans le répertoire /home/pi/ et rendez le éxécutable :
+
+```
+sudo chmod 755 GA.sh
+```
+
+et ajoutez cette ligne au bas du fichier /home/pi/.config/lxsession/LXDE-pi/autostart :
+
+```
+./GA.sh
+```
+
+Reboot et... : "Ok Google!"
+
 
 Divers :
 --------
