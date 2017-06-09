@@ -438,7 +438,11 @@ https://github.com/thortex/rpi3-webiopi/wiki/HowToBuild
 WebIOPi est à présent installé et fonctionnel, essayez de vous rendre sur <ip du raspberry>:8000
 Vous devriez tomber sur une interface listant vos ports Gpio (par défaut : user = webiopi, pass = raspberry).
 
-Ajouter cette balise dans le Head de index.html : <meta name="mobile-web-app-capable" content="yes">
+Ajouter cette balise dans le Head de index.html : 
+
+```
+<meta name="mobile-web-app-capable" content="yes">
+```
 
 Afin de controller les moteurs, nous allons utiliser un L298N Double pont H DC Driver.
 Il faudra lui envoyer les infos de pilotage de moteurs sur 4 fils (2 moteurs, marche avant et marche arrière).
