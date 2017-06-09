@@ -74,19 +74,25 @@ sudo nano /etc/vsftpd.conf
 
 changer :
 
+```
 Anonymous_enabled=YES
+```
 
 en
 
+```
 Anonymous_enabled=NO
+```
 
 Maintenant, enlevez le # devant les lignes suivantes :
 
+```
 Local_enable = YES
 local_unmask=022
 Write_enabled=YES
 Ascii_upload_enabled=YES
 Ascii_download_enabled=YES
+```
 
 Puis faites [ctrl] + [x] puis [o] puis [Entrée]
 
@@ -105,6 +111,7 @@ Dans mon exemple 192.168.3.1
 Définition d'une adresse IP statique
 Dans le fichier /etc/network/interfaces, supprimer les lignes suivantes :
 
+```
 iface wlan0 inet manual
 wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
 Les remplacer par :
@@ -113,15 +120,24 @@ allow-hotplug wlan0
 iface wlan0 inet static
 address 192.168.3.1
 netmask 255.255.255.0
+```
+
 Redémarrez le réseau :
 
+```
 sudo service networking restart
+```
+
 Installation d'un serveur DHCP
+
 Le serveur DHCP permet d'attribuer automatiquement une adresse IP aux machines qui se connecteront à votre réseau Wifi.
 
 Installez le paquet isc-dhcp-server :
 
+```
 sudo apt-get install isc-dhcp-server
+```
+
 À ce stade, le service ne devrait pas démarrer correctement :
 
 Generating /etc/default/isc-dhcp-server...
@@ -132,15 +148,23 @@ Vous pouvez ignorer ces erreurs pour le moment.
 
 Éditez le fichier de configuration du serveur : /etc/dhcp/dhcpd.conf et commentez les options domain-name et domain-name-servers :
 
+```
 #option domain-name "example.org";
 #option domain-name-servers ns1.example.org, ns2.example.org;
-Décommentez la ligne authoritative. Cela permet d'indiquer à votre serveur DHCP qu'il est le seul à fournir des adresses IP sur ce réseau et donc possède la pleine connaissance des baux accordés.
+```
 
+Décommentez la ligne authoritative. 
+Cela permet d'indiquer à votre serveur DHCP qu'il est le seul à fournir des adresses IP sur ce réseau et donc possède la pleine connaissance des baux accordés.
+
+```
 # If this DHCP server is the official DHCP server for the local
 # network, the authoritative directive should be uncommented.
 authoritative;
+```
+
 Enfin, configurez le comportement du serveur DHCP :
 
+```
 subnet 192.168.3.0 netmask 255.255.255.0 {
   range 192.168.3.10 192.168.3.50;
   option broadcast-address 192.168.3.255;
@@ -150,6 +174,8 @@ subnet 192.168.3.0 netmask 255.255.255.0 {
   option domain-name "local";
   option domain-name-servers 80.67.169.12;
 }
+```
+
 Le paramètre range limite la place d'adresses IP qui seront alouées. On en permet ici 51 : c'est probablement beaucoup (trop) s'il s'agit de votre réseau personnel.
 
 L'option broadcast-address spécifie l'adresse IP telle que les paquets qui seront envoyés sur cette adresse seront interceptés par toutes les machines présentes sur ce réseau (ayant donc une IP entre 192.166.100.1 et 192.168.100.254 car le masque de sous réseau est 255.255.255.0).
@@ -160,18 +186,27 @@ On attribue ici un bail pour une durée de 600 secondes avec le paramètre default
 
 Cet exemple utilise le DNS de FDN (ligne domain-name-servers). Vous pouvez bien évidemment en utiliser d'autres (certains préfèrent ceux de Google...).
 
+
 Déclarez enfin l'interface sans fil comme l'interface par défaut pour répondre aux requêtes DHCP dans le fichier /etc/default/isc-dhcp-server :
 
+```
 # On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
 #       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
 #INTERFACES=""
 INTERFACES="wlan0"
+```
+
 Installation de hostapd
+
 Hostapd est un démon permettant de créer un point d'accès sans fil. Pour l'installer :
 
+```
 sudo apt-get install hostapd
+
+```
 Créez son fichier de configuration, /etc/hostapd/hostapd.conf :
 
+```
 interface=wlan0
 driver=nl80211
 ssid=<YOUR SSID>
@@ -187,38 +222,61 @@ wpa=1
 wpa_passphrase=<YOUR PASSPHRASE>
 wpa_key_mgmt=WPA-PSK
 wpa_pairwise=TKIP
+```
 
 Remplacez dans cet exemple :
 
 <YOUR SSID> par le nom que vous souhaitez donner à votre réseau ;
 <YOUR PASSPHRASE> par le mot de passer permettant l'accès au réseau.
+
 Déclarez enfin ce fichier afin qu'il soit utilisé par hostapd dans /etc/default/hostapd en ajoutant la ligne :
 
+```
 DAEMON_CONF="/etc/hostapd/hostapd.conf"
+```
+
 Configuration du routage entre l'interface sans fil et l'interface filaire
+
 Activer le routage IP dans le fichier /etc/sysctl.conf en décommentant la ligne suivante :
 
+```
 net.ipv4.ip_forward=1
+```
+
 Pour activer ce routage immédiatement (sans avoir besoin de redémarrer), lancez la commande :
 
+```
 sudo sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
-Vous pouvez enfin configurer le routage en utilisant iptables :
+```
 
+Vous pouvez enfin configurer le routage en utilisant iptables depuis la console :
+
+```
 sudo iptables -t nat -A POSTROUTING -o wlan1 -j MASQUERADE
 sudo iptables -A FORWARD -i wlan1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
 sudo iptables -A FORWARD -i wlan0 -o wlan1 -j ACCEPT
+```
+
 Persistence des règles iptables
+
 Les règles iptables définies précédemment sont perdues au au redémarrage. Pour les recharger à chaque lancement de la machine, vous pouvez utiliser le paquet iptables-persistent. Pour l'installer :
 
+```
 sudo apt-get install iptables-persistent
+```
+
 Par défaut, il demandera si vous souhaitez enregistrer les règles actuellement définies. Choisissez « oui ». Si vous souhaitez les redéfinir ultérieurement, vous pourrez les enregistrer en invoquant la cible save et les recharger avec reload :
 
+''
 sudo /etc/init.d/netfilter-persistent save
 
 sudo /etc/init.d/netfilter-persistent reload
+```
 
 La voie est libre
-À ce stade, vous deviez être en mesure de vous connecter au point d'accès de façon transparente. Étant donnée la richesse des matériels et leurs spécificités, je ne garantis pas que ce « mode d'emploi » soit universel. J'espère néanmoins qu'il vous aura aidé en première approche à monter votre propre point d'accès Wifi.
+À ce stade, vous deviez être en mesure de vous connecter au point d'accès de façon transparente. 
+Étant donnée la richesse des matériels et leurs spécificités, je ne garantis pas que ce « mode d'emploi » soit universel. 
+J'espère néanmoins qu'il vous aura aidé en première approche à monter votre propre point d'accès Wifi.
 
 
 
