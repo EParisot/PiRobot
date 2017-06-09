@@ -267,7 +267,7 @@ sudo apt-get install iptables-persistent
 
 Par défaut, il demandera si vous souhaitez enregistrer les règles actuellement définies. Choisissez « oui ». Si vous souhaitez les redéfinir ultérieurement, vous pourrez les enregistrer en invoquant la cible save et les recharger avec reload :
 
-''
+```
 sudo /etc/init.d/netfilter-persistent save
 
 sudo /etc/init.d/netfilter-persistent reload
