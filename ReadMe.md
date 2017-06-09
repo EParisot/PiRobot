@@ -438,6 +438,9 @@ https://github.com/thortex/rpi3-webiopi/wiki/HowToBuild
 WebIOPi est à présent installé et fonctionnel, essayez de vous rendre sur <ip du raspberry>:8000
 Vous devriez tomber sur une interface listant vos ports Gpio (par défaut : user = webiopi, pass = raspberry).
 
+Explications :
+--------------
+
 Ajouter cette balise dans le Head de index.html : 
 
 ```
@@ -448,7 +451,7 @@ Afin de controller les moteurs, nous allons utiliser un L298N Double pont H DC D
 Il faudra lui envoyer les infos de pilotage de moteurs sur 4 fils (2 moteurs, marche avant et marche arrière).
 
 Le signal envoyé sera de type PWM (Pulse With Modulation) pour la vitesse + GPIO pour activer les directions de sorte que chaque pin/cable controle une direction par moteur, 
-avec modulation de la tention appliquée au moteur selon l'input des joystics.
+avec modulation de la tention appliquée au moteur selon l'input des joystics (NippleJS).
 
 Après avoir longtemps galéré avec Webiopi et le Python (faire passer une variable numérique du javascript au python semble 
 compliqué...), j'ai finalement compris qu'il était possible de tout faire depuis le Javascript intégré dans la page Html
