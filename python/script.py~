@@ -2,8 +2,7 @@ import webiopi
 import datetime
 from time import sleep
 import subprocess
-from gpiozero import DistanceSensor
-
+from gpiozero import DistanceSensor, MotionSensor
 
 GPIO = webiopi.GPIO
 
@@ -21,13 +20,9 @@ led1 = 24
 led2 = 23
 led3 = 18
 
+pir = MotionSensor(27)
 
-global temp
 
-
-@webiopi.macro
-def GoogleOn():		
-	subprocess.Popen(["/bin/bash", "/home/pi/GA.sh"])
 
 
 @webiopi.macro
@@ -41,28 +36,65 @@ def camOff():
 @webiopi.macro
 def takeaPic():
 	picdate = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-	piccmd = 'wget http://192.168.3.1:8080/?action=snapshot -O /home/pi/Pictures/Photos/' + picdate + '.jpg'
+	piccmd = 'raspistill -vf -hf -o /home/pi/Pictures/Photos/' + picdate + '.jpg'
 	subprocess.call(piccmd, shell=True)
-	
+
+global temp
+
 @webiopi.macro
 def Temp(arg0):
 	global temp
 	temp = int(subprocess.check_output(["/opt/vc/bin/vcgencmd","measure_temp"])[5:7])
 	return (temp)
 
+@webiopi.macro
+def Shutdown():
+        subprocess.call(["sudo", "shutdown"])
+
+@webiopi.macro
+def Reboot():
+        subprocess.call(["sudo", "reboot"])
+
 def Distance():
         dist = ultrasonic.distance
         return (dist)
 
 def reactionDistance():
+        GPIO.digitalWrite(MOT1a, GPIO.LOW)
+        GPIO.digitalWrite(MOT2a, GPIO.LOW)
         GPIO.digitalWrite(MOT1b, GPIO.HIGH)
         GPIO.digitalWrite(MOT2b, GPIO.HIGH)
         GPIO.pulseRatio(MOT1v, 0.5)
         GPIO.pulseRatio(MOT2v, 0.5)
         sleep(0.1)
+        GPIO.digitalWrite(MOT1b, GPIO.HIGH)
+        GPIO.digitalWrite(MOT1a, GPIO.LOW)
+        GPIO.digitalWrite(MOT2b, GPIO.LOW)
+        GPIO.digitalWrite(MOT2a, GPIO.HIGH)
+        GPIO.pulseRatio(MOT1v, 1)
+        GPIO.pulseRatio(MOT1v, 1)
+        sleep(0.2)
         GPIO.pulseRatio(MOT1v, 0)
         GPIO.pulseRatio(MOT2v, 0)
-        
+
+
+def avancerVite():
+        GPIO.digitalWrite(MOT1b, GPIO.LOW)
+        GPIO.digitalWrite(MOT2b, GPIO.LOW)
+        GPIO.digitalWrite(MOT1a, GPIO.HIGH)
+        GPIO.digitalWrite(MOT2a, GPIO.HIGH)
+        GPIO.pulseRatio(MOT1v, 0.3)
+        GPIO.pulseRatio(MOT2v, 0.3)
+
+
+def avancerLent():
+        GPIO.digitalWrite(MOT1b, GPIO.LOW)
+        GPIO.digitalWrite(MOT2b, GPIO.LOW)
+        GPIO.digitalWrite(MOT1a, GPIO.HIGH)
+        GPIO.digitalWrite(MOT2a, GPIO.HIGH)
+        GPIO.pulseRatio(MOT1v, 0.3)
+        GPIO.pulseRatio(MOT2v, 0.3)
+
 def ledDistance():
         if Distance()<0.5000000:
                 reactionDistance()
@@ -70,10 +102,14 @@ def ledDistance():
                 sleep(0.01)
         elif Distance()<1.0:
                 GPIO.digitalWrite(led2, GPIO.HIGH)
+                avancerLent()
                 sleep(0.1)
         else:
                 GPIO.digitalWrite(led3, GPIO.HIGH)
+                avancerVite()
                 sleep(0.2)
+        GPIO.pulseRatio(MOT1v, 0)
+        GPIO.pulseRatio(MOT2v, 0)
         GPIO.digitalWrite(led1, GPIO.LOW)
         GPIO.digitalWrite(led2, GPIO.LOW)
         GPIO.digitalWrite(led3, GPIO.LOW)
@@ -94,6 +130,35 @@ def DistOff():
         Dist=False
 
 
+def searchMvt():
+        if pir.motion_detected:
+                takeaPic()
+                sleep(1)
+                GPIO.digitalWrite(led1, GPIO.HIGH)
+                GPIO.digitalWrite(led2, GPIO.HIGH)
+                GPIO.digitalWrite(led3, GPIO.HIGH)                
+                sleep(1)
+                GPIO.digitalWrite(led1, GPIO.LOW)
+                GPIO.digitalWrite(led2, GPIO.LOW)
+                GPIO.digitalWrite(led3, GPIO.LOW)
+                sleep(1)
+
+
+       
+
+global Mvt
+Mvt=False
+
+@webiopi.macro
+def MvtOn():
+        global Mvt
+        Mvt=True
+
+
+@webiopi.macro
+def MvtOff():
+        global Mvt
+        Mvt=False
 
 # setup function is automatically called at WebIOPi startup
 def setup():
@@ -124,6 +189,8 @@ def setup():
 def loop():
         if Dist==True:
                 ledDistance()
+        if Mvt==True:
+                searchMvt()
         webiopi.sleep(0.01)
 
 # destroy function is called at WebIOPi shutdown

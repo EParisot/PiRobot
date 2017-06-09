@@ -121,21 +121,21 @@
 	var repeatTemp = setInterval ("callMacro_Temp()", 10000);
 		
 	
-//	async function fctGoogleOn() {
-//			webiopi().callMacro('GoogleOn');
-//			var dialog = document.getElementById('startGoogledialog');  		
-//			dialog.show();
-//			await sleep(1000);
-//			dialog.close();
-//		}
-//		
-//	async function fctGoogleOff() {
-//			webiopi().callMacro('GoogleOff');
-//			var dialog = document.getElementById('stopGoogledialog');  		
-//			dialog.show();
-//			await sleep(1000);
-//			dialog.close();
-//		}
+	async function fctMvtOn() {
+			webiopi().callMacro('MvtOn');
+			var dialog = document.getElementById('startMvtdialog');  		
+			dialog.show();
+			await sleep(1000);
+			dialog.close();
+		}
+		
+	async function fctMvtOff() {
+			webiopi().callMacro('MvtOff');
+			var dialog = document.getElementById('stopMvtdialog');  		
+			dialog.show();
+			await sleep(1000);
+			dialog.close();
+		}
 
 	async function fctDistOn(){
 		webiopi().callMacro("DistOn");
@@ -151,8 +151,42 @@
 			await sleep(1000);
 			dialog.close();
 		}
-		
 	
+	/* When the user clicks on the button, 
+	toggle between hiding and showing the dropdown content */
+	function myFunction() {
+		document.getElementById("myDropdown").classList.toggle("show");
+	}
+
+	// Close the dropdown menu if the user clicks outside of it
+	window.onclick = function(event) {
+	if (!event.target.matches('.dropbtn')) {
+		var dropdowns = document.getElementsByClassName("dropdown-content");
+		var i;
+		for (i = 0; i < dropdowns.length; i++) {
+			var openDropdown = dropdowns[i];
+			if (openDropdown.classList.contains('show')) {
+				openDropdown.classList.remove('show');
+			}
+		}
+	}
+	}
+	
+	async function fctShutdown() {
+		var dialog = document.getElementById('shutdowndialog');  		
+			dialog.show();
+			await sleep(1000);
+			dialog.close();
+		webiopi().callMacro("Shutdown");
+	}
+	
+	async function fctReboot() {
+		var dialog = document.getElementById('rebootdialog');  		
+			dialog.show();
+			await sleep(1000);
+			dialog.close();
+		webiopi().callMacro("Reboot");
+	}
         </script>
 		
         <style type="text/css">
@@ -162,8 +196,12 @@
 		padding		: 0;
 		margin		: 0;
 		background  : #BBB url(http://192.168.3.1:8080/?action=stream) no-repeat;
-		background-size : cover;
-		}				 
+		background-size : cover;	
+		}
+		
+		p {
+		color : lime;
+		}		 
 				
 		 #zone_joystick1 {		 
 		position : absolute;
@@ -215,7 +253,7 @@
 		justify-content: flex-end;
 		align-items: flex-end;
 		width: 40%;
-        height: 30%;
+        	height: 30%;
 		position : absolute;
 		left : 0px;
 		top : 0px;
@@ -240,42 +278,93 @@
 		}
 		
 		#temp {
-		font-size: 25px;
+		font-size: 30px;
 		position : relative;
 		left : 0%;
 		top : 0px;
 		margin-top : 10px;
 		}
 		
-<!-- 	 	#btnGoogleOff {
+		
+		/* Dropdown Button */
+		.dropbtn {
+		width: 50px;
+		height: 50px;
+		background: url(power.png) no-repeat center; 
+        	background-size : contain;		
+		margin-top : 10px;
+		cursor: pointer;
+		}
+
+		/* Dropdown button on active */
+		.dropbtn:active {
+		border-color: lime;
+		
+		}
+
+		/* The container div - needed to position the dropdown content */
+		.dropdown {
+		position : relative;
+		top : 0px;
+		left : 45%;
+		display: inline-block;
+		}
+
+		/* Dropdown Content (Hidden by Default) */
+		.dropdown-content {
+		display: none;
+		position: absolute;
+		left : 55px;
+		background-color: #f9f9f9;
+		min-width: 160px;
+		box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+		z-index: 1;
+		}
+
+		/* Links inside the dropdown */
+		.dropdown-content a {
+		color: black;
+		font-size; 30px;
+		padding: 12px 16px;
+		text-decoration: none;
+		display: block;
+		}
+
+		/* Change color of dropdown links on active */
+		.dropdown-content a:active {background-color: lime}
+
+		/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+		.show {display:block;}
+		
+ 	 	#btnMvtOff {
 		width: 80px;
         	height: 45px;
 		margin: 10px 10px 10px 5px;
 		border-radius: 8px;
 		border: 2px solid #333333;
-        	background: url(GoogleOff.png) no-repeat center; 
+        	background: url(MvtOff.png) no-repeat center; 
         	background-size : contain;		
 		}			
-		 #btnGoogleOff:active {
+		 #btnMvtOff:active {
 		background-color: #2EFE2E;
 		}		
-		 #btnGoogleOff:focus {
+		 #btnMvtOff:focus {
 		}
 		
-		 #btnGoogleOn {
+		 #btnMvtOn {
 		width: 80px;
         	height: 45px;
 		margin: 10px 5px 10px 10px;
 		border-radius: 8px;
 		border: 2px solid #333333;
-        	background: url(GoogleOn.png) no-repeat center; 
+        	background: url(MvtOn.png) no-repeat center; 
         	background-size : contain;			
 		}	
-		 #btnGoogleOn:active {
+		 #btnMvtOn:active {
 		background-color: #2EFE2E;
 		}		
-		 #btnGoogleOn:focus {
-		}       -->                        
+		 #btnMvtOn:focus {
+		}                              
 		
 		#btnDistOff {
 		width: 80px;
@@ -287,7 +376,7 @@
         	background-size : contain;		
 		}			
 		 #btnDistOff:active {
-		background-color: #2EFE2E;
+		border-color: lime;
 		}		
 		 #btnDistOff:focus {
 		}
@@ -302,7 +391,7 @@
         	background-size : contain;			
 		}	
 		 #btnDistOn:active {
-		background-color: #2EFE2E;
+		border-color: lime;
 		}		
 		 #btnDistOn:focus {
 		}
@@ -317,7 +406,7 @@
         	background-size : contain;
 		}					
 		 #btnCamPic:active {
-		background-color: #2EFE2E;
+		border-color: lime;
 		}		
 		 #btnCamPic:focus {
 		}
@@ -328,11 +417,11 @@
 		margin: 10px 10px 10px 5px;
 		border-radius: 8px;
 		border: 2px solid #333333;
-        	background: url(stop.png) no-repeat center; 
+        	background: url(CamOff.png) no-repeat center; 
         	background-size : contain;		
 		}			
 		 #btnCamOff:active {
-		background-color: #2EFE2E;
+		border-color: lime;
 		}		
 		 #btnCamOff:focus {
 		}
@@ -343,11 +432,11 @@
 		margin: 10px 5px 10px 10px;
 		border-radius: 8px;
 		border: 2px solid #333333;
-        	background: url(play.png) no-repeat center; 
+        	background: url(CamOn.png) no-repeat center; 
         	background-size : contain;			
 		}	
 		 #btnCamOn:active {
-		background-color: #2EFE2E;
+		border-color: lime;
 		}		
 		 #btnCamOn:focus {
 		}
@@ -366,7 +455,7 @@
 		color: lime;
 		}	
 		 #gpio26.LOW {	
-		background-color: #2EFE2E;
+		background-color: lime;
 		color: black;
 		}	
 
@@ -376,27 +465,27 @@
         	background-size : contain;
         	border: none;
 		position : absolute;
-		 top : 0%;
+		 top : -50%;
 		 width : 20%;
 		 height: 20%;
 		}		
 		
 		#startcamdialog {
-		background: url(play.png) no-repeat center; 
+		background: url(CamOn.png) no-repeat center; 
         	background-size : contain;
         	border: none;
 		position : absolute;
-		 top : 0%;
+		 top : -50%;
 		 width : 30%;
 		 height: 30%;
 		}	
 		
 		#stopcamdialog {
-		background: url(stop.png) no-repeat center; 
+		background: url(CamOff.png) no-repeat center; 
         	background-size : contain;
         	border: none;
 		position : absolute;
-		 top : 0%;
+		 top : -50%;
 		 width : 30%;
 		 height: 30%;
 		}	
@@ -406,7 +495,7 @@
         	background-size : contain;
         	border: none;
 		position : absolute;
-		 top : 0%;
+		 top : -50%;
 		 width : 30%;
 		 height: 30%;
 		}	
@@ -416,7 +505,47 @@
         	background-size : contain;
         	border: none;
 		position : absolute;
-		 top : 0%;
+		 top : -50%;
+		 width : 30%;
+		 height: 30%;
+		}	
+		
+		#shutdowndialog {
+		font-size: 30px;
+		background: none; 
+        	border: none;
+		position : absolute;
+		 top : -70%;
+		 width : 30%;
+		 height: 30%;
+		}
+
+		#rebootdialog {
+		font-size: 30px;
+		background: none; 
+        	border: none;
+		position : absolute;
+		 top : -70%;
+		 width : 30%;
+		 height: 30%;
+		}
+		
+		#startMvtdialog {
+		background: url(MvtOn.png) no-repeat center; 
+        	background-size : contain;
+        	border: none;
+		position : absolute;
+		 top : -50%;
+		 width : 30%;
+		 height: 30%;
+		}	
+		
+		#stopMvtdialog {
+		background: url(MvtOff.png) no-repeat center; 
+        	background-size : contain;
+        	border: none;
+		position : absolute;
+		 top : -50%;
 		 width : 30%;
 		 height: 30%;
 		}	
@@ -440,10 +569,16 @@
 </dialog> 
 <dialog id="stopDistdialog">   
 </dialog>
-<!-- <dialog id="startGoogledialog">   
+<dialog id="shutdowndialog">
+<p>Shuting Down ...</p>
 </dialog> 
-<dialog id="stopGoogledialog">   
-</dialog> -->
+<dialog id="rebootdialog">
+<p>Rebooting ...</p>  
+</dialog>
+<dialog id="startMvtdialog">   
+</dialog> 
+<dialog id="stopMvtdialog">   
+</dialog>
 
 
 
@@ -453,15 +588,26 @@
 </div>
 </div>
 
+
+<div class="dropdown">
+  <button onclick="myFunction()" class="dropbtn"/>
+  <div id="myDropdown" class="dropdown-content">
+    <a href="#" onclick="fctShutdown()">Shutdown</a>
+    <a href="#" onclick="fctReboot()">Reboot</a>
+</div>
+
+
+</div>
+
 <div id="actionsbis">
 <div id="togglesbis" class="toggles">
+<button type="button" id="btnMvtOn" onclick="fctMvtOn()">
+<button type="button" id="btnMvtOff" onclick="fctMvtOff()">
+</div>
+<div class="toggles">
 <button type="button" id="btnDistOn" onclick="fctDistOn()">
 <button type="button" id="btnDistOff" onclick="fctDistOff()">
 </div>
-<!-- <div class="toggles">
-<button type="button" id="btnGoogleOn" onclick="fctGoogleOn()">
-<button type="button" id="btnGoogleOff" onclick="fctGoogleOff()">
-</div> -->
 </div>
 
 <div id="actions">

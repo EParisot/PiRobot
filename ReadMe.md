@@ -22,16 +22,24 @@ Matériel utilisé :
 
 * DongleUSB Wifi (afin d'avoir une connexion Internet si la première interfacte wifi est en point d'acces) :
 
-* Kit apprentissage bien utile, quelques capteurs intéressants :
+* Kit apprentissage bien utile, quelques capteurs intéressants (PIR, Ultrasonic distance sensor,...) :
 -> https://www.amazon.fr/gp/product/B01N0TKCJN/ref=oh_aui_detailpage_o02_s01?ie=UTF8&psc=1
 
 * L298N Double pont H DC Driver :
 -> https://www.amazon.fr/gp/product/B071RN2NNK/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1
 
+* 1 ou 2 Batterie(s) 6V 2300mAh NiMH + Chargeur à prévoir 6v ou 12v selon votre config moteurs (6v de base):
+-> https://www.amazon.fr/gp/product/B00LAFZR0C/ref=oh_aui_detailpage_o04_s00?ie=UTF8&psc=1
+
+* Micro (USB), enceinte portable (microJack) (nous installerons GoogleAssistant SDK plus tard) :
+-> https://www.amazon.fr/gp/product/B01KLRBHGM/ref=oh_aui_detailpage_o06_s00?ie=UTF8&psc=1
+-> https://www.amazon.fr/gp/product/B00TFGWAA8/ref=oh_aui_detailpage_o05_s00?ie=UTF8&psc=1
+
 * Chassis TYCO Rebound (batterie HS, peut importe il faudra trouver une alternative):
 -> http://www.ebay.com/bhp/tyco-rebound
 
-* un smartphone, tablette.
+
+* un smartphone, un PC...
 
 
 Utilitaires Windows sur le PC :
@@ -42,6 +50,8 @@ Utilitaires Windows sur le PC :
 -> Etcher (écriture image sur la carteSD)
 
 -> Putty (SSH client)
+
+-> Vim et Notepad++ (attention ce dernier n'aime pas le Pyhton..., d'ou Vim...)
 
 
 Installation Logicielle :
@@ -54,7 +64,7 @@ Raspbian Jessie :
 
 -> Installation classique
 
--> Installer le serveur FTP
+-> Installer le serveur FTP :
 
 ```
 sudo apt-get install vsftpd
@@ -79,6 +89,138 @@ Ascii_upload_enabled=YES
 Ascii_download_enabled=YES
 
 Puis faites [ctrl] + [x] puis [o] puis [Entrée]
+
+
+Installer le Dongle Wifi :
+--------------------------
+
+Le but de cette opération est de rendre le robot utilisable en conditions connectée et déconnectée.
+
+L'interface wlan0 sera le point d'accès pour le smartphone qui va piloter le tout.
+L'interface supplémentaire (dongle) wlan1 sera l'accès Internet.
+
+Avant tout branchez le dongle, attribuez lui une IP fixe dans votre Box et routez le port TCP 8000 dessus.
+Dans mon exemple 192.168.3.1
+
+Définition d'une adresse IP statique
+Dans le fichier /etc/network/interfaces, supprimer les lignes suivantes :
+
+iface wlan0 inet manual
+wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
+Les remplacer par :
+
+allow-hotplug wlan0
+iface wlan0 inet static
+address 192.168.3.1
+netmask 255.255.255.0
+Redémarrez le réseau :
+
+sudo service networking restart
+Installation d'un serveur DHCP
+Le serveur DHCP permet d'attribuer automatiquement une adresse IP aux machines qui se connecteront à votre réseau Wifi.
+
+Installez le paquet isc-dhcp-server :
+
+sudo apt-get install isc-dhcp-server
+À ce stade, le service ne devrait pas démarrer correctement :
+
+Generating /etc/default/isc-dhcp-server...
+[FAIL] Starting ISC DHCP server: dhcpd[....] check syslog for diagnostics. ... failed!
+ failed!
+invoke-rc.d: initscript isc-dhcp-server, action "start" failed.
+Vous pouvez ignorer ces erreurs pour le moment.
+
+Éditez le fichier de configuration du serveur : /etc/dhcp/dhcpd.conf et commentez les options domain-name et domain-name-servers :
+
+#option domain-name "example.org";
+#option domain-name-servers ns1.example.org, ns2.example.org;
+Décommentez la ligne authoritative. Cela permet d'indiquer à votre serveur DHCP qu'il est le seul à fournir des adresses IP sur ce réseau et donc possède la pleine connaissance des baux accordés.
+
+# If this DHCP server is the official DHCP server for the local
+# network, the authoritative directive should be uncommented.
+authoritative;
+Enfin, configurez le comportement du serveur DHCP :
+
+subnet 192.168.3.0 netmask 255.255.255.0 {
+  range 192.168.3.10 192.168.3.50;
+  option broadcast-address 192.168.3.255;
+  option routers 192.168.3.1;
+  default-lease-time 600;
+  max-lease-time 7200;
+  option domain-name "local";
+  option domain-name-servers 80.67.169.12;
+}
+Le paramètre range limite la place d'adresses IP qui seront alouées. On en permet ici 51 : c'est probablement beaucoup (trop) s'il s'agit de votre réseau personnel.
+
+L'option broadcast-address spécifie l'adresse IP telle que les paquets qui seront envoyés sur cette adresse seront interceptés par toutes les machines présentes sur ce réseau (ayant donc une IP entre 192.166.100.1 et 192.168.100.254 car le masque de sous réseau est 255.255.255.0).
+
+Quant à elle, l'option routers indique l'adresse de la passerelle, c'est à dire la machine par laquelle passent tous les paquets sortants du réseau (en direction ou en provenance d'Internet par exemple).
+
+On attribue ici un bail pour une durée de 600 secondes avec le paramètre default-lease-time. C'est cette durée qui sera utilisée si le client ne précise rien. S'il demande un bail en précisant une durée, celle-ci lui sera accordée si elle ne dépasse pas 7200 secondes, comme défini avec le paramètre max-lease-time.
+
+Cet exemple utilise le DNS de FDN (ligne domain-name-servers). Vous pouvez bien évidemment en utiliser d'autres (certains préfèrent ceux de Google...).
+
+Déclarez enfin l'interface sans fil comme l'interface par défaut pour répondre aux requêtes DHCP dans le fichier /etc/default/isc-dhcp-server :
+
+# On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
+#       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
+#INTERFACES=""
+INTERFACES="wlan0"
+Installation de hostapd
+Hostapd est un démon permettant de créer un point d'accès sans fil. Pour l'installer :
+
+sudo apt-get install hostapd
+Créez son fichier de configuration, /etc/hostapd/hostapd.conf :
+
+interface=wlan0
+driver=nl80211
+ssid=<YOUR SSID>
+hw_mode=g
+channel=6
+beacon_int=100
+dtim_period=2
+max_num_sta=40
+rts_threshold=2347
+fragm_threshold=2346
+auth_algs=1
+wpa=1
+wpa_passphrase=<YOUR PASSPHRASE>
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP
+
+Remplacez dans cet exemple :
+
+<YOUR SSID> par le nom que vous souhaitez donner à votre réseau ;
+<YOUR PASSPHRASE> par le mot de passer permettant l'accès au réseau.
+Déclarez enfin ce fichier afin qu'il soit utilisé par hostapd dans /etc/default/hostapd en ajoutant la ligne :
+
+DAEMON_CONF="/etc/hostapd/hostapd.conf"
+Configuration du routage entre l'interface sans fil et l'interface filaire
+Activer le routage IP dans le fichier /etc/sysctl.conf en décommentant la ligne suivante :
+
+net.ipv4.ip_forward=1
+Pour activer ce routage immédiatement (sans avoir besoin de redémarrer), lancez la commande :
+
+sudo sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
+Vous pouvez enfin configurer le routage en utilisant iptables :
+
+sudo iptables -t nat -A POSTROUTING -o wlan1 -j MASQUERADE
+sudo iptables -A FORWARD -i wlan1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -A FORWARD -i wlan0 -o wlan1 -j ACCEPT
+Persistence des règles iptables
+Les règles iptables définies précédemment sont perdues au au redémarrage. Pour les recharger à chaque lancement de la machine, vous pouvez utiliser le paquet iptables-persistent. Pour l'installer :
+
+sudo apt-get install iptables-persistent
+Par défaut, il demandera si vous souhaitez enregistrer les règles actuellement définies. Choisissez « oui ». Si vous souhaitez les redéfinir ultérieurement, vous pourrez les enregistrer en invoquant la cible save et les recharger avec reload :
+
+sudo /etc/init.d/netfilter-persistent save
+
+sudo /etc/init.d/netfilter-persistent reload
+
+La voie est libre
+À ce stade, vous deviez être en mesure de vous connecter au point d'accès de façon transparente. Étant donnée la richesse des matériels et leurs spécificités, je ne garantis pas que ce « mode d'emploi » soit universel. J'espère néanmoins qu'il vous aura aidé en première approche à monter votre propre point d'accès Wifi.
+
+
 
 Installer la Caméra :
 ---------------------
@@ -210,134 +352,6 @@ sudo service livestream.sh restart
 
 Afin de stocker les photos que prendra le Robot, nous créons un dossier: /home/pi/Pictures/Photos
 
-Installer un Dongle Wifi :
---------------------------
-
-Le but de cette opération est de rendre le robot utilisable en conditions connectée et déconnectée.
-
-L'interface wlan0 sera le point d'accès pour le smartphone qui va piloter le tout.
-L'interface supplémentaire (dongle) wlan1 sera l'accès Internet.
-
-Avant tout branchez le dongle, attribuez lui une IP fixe dans votre Box et routez le port TCP 8000 dessus.
-Dans mon exemple 192.168.3.1
-
-Définition d'une adresse IP statique
-Dans le fichier /etc/network/interfaces, supprimer les lignes suivantes :
-
-iface wlan0 inet manual
-wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
-Les remplacer par :
-
-allow-hotplug wlan0
-iface wlan0 inet static
-address 192.168.3.1
-netmask 255.255.255.0
-Redémarrez le réseau :
-
-sudo service networking restart
-Installation d'un serveur DHCP
-Le serveur DHCP permet d'attribuer automatiquement une adresse IP aux machines qui se connecteront à votre réseau Wifi.
-
-Installez le paquet isc-dhcp-server :
-
-sudo apt-get install isc-dhcp-server
-À ce stade, le service ne devrait pas démarrer correctement :
-
-Generating /etc/default/isc-dhcp-server...
-[FAIL] Starting ISC DHCP server: dhcpd[....] check syslog for diagnostics. ... failed!
- failed!
-invoke-rc.d: initscript isc-dhcp-server, action "start" failed.
-Vous pouvez ignorer ces erreurs pour le moment.
-
-Éditez le fichier de configuration du serveur : /etc/dhcp/dhcpd.conf et commentez les options domain-name et domain-name-servers :
-
-#option domain-name "example.org";
-#option domain-name-servers ns1.example.org, ns2.example.org;
-Décommentez la ligne authoritative. Cela permet d'indiquer à votre serveur DHCP qu'il est le seul à fournir des adresses IP sur ce réseau et donc possède la pleine connaissance des baux accordés.
-
-# If this DHCP server is the official DHCP server for the local
-# network, the authoritative directive should be uncommented.
-authoritative;
-Enfin, configurez le comportement du serveur DHCP :
-
-subnet 192.168.3.0 netmask 255.255.255.0 {
-  range 192.168.3.10 192.168.3.50;
-  option broadcast-address 192.168.3.255;
-  option routers 192.168.3.1;
-  default-lease-time 600;
-  max-lease-time 7200;
-  option domain-name "local";
-  option domain-name-servers 80.67.169.12;
-}
-Le paramètre range limite la place d'adresses IP qui seront alouées. On en permet ici 51 : c'est probablement beaucoup (trop) s'il s'agit de votre réseau personnel.
-
-L'option broadcast-address spécifie l'adresse IP telle que les paquets qui seront envoyés sur cette adresse seront interceptés par toutes les machines présentes sur ce réseau (ayant donc une IP entre 192.166.100.1 et 192.168.100.254 car le masque de sous réseau est 255.255.255.0).
-
-Quant à elle, l'option routers indique l'adresse de la passerelle, c'est à dire la machine par laquelle passent tous les paquets sortants du réseau (en direction ou en provenance d'Internet par exemple).
-
-On attribue ici un bail pour une durée de 600 secondes avec le paramètre default-lease-time. C'est cette durée qui sera utilisée si le client ne précise rien. S'il demande un bail en précisant une durée, celle-ci lui sera accordée si elle ne dépasse pas 7200 secondes, comme défini avec le paramètre max-lease-time.
-
-Cet exemple utilise le DNS de FDN (ligne domain-name-servers). Vous pouvez bien évidemment en utiliser d'autres (certains préfèrent ceux de Google...).
-
-Déclarez enfin l'interface sans fil comme l'interface par défaut pour répondre aux requêtes DHCP dans le fichier /etc/default/isc-dhcp-server :
-
-# On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
-#       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
-#INTERFACES=""
-INTERFACES="wlan0"
-Installation de hostapd
-Hostapd est un démon permettant de créer un point d'accès sans fil. Pour l'installer :
-
-sudo apt-get install hostapd
-Créez son fichier de configuration, /etc/hostapd/hostapd.conf :
-
-interface=wlan0
-driver=nl80211
-ssid=<YOUR SSID>
-hw_mode=g
-channel=6
-beacon_int=100
-dtim_period=2
-max_num_sta=40
-rts_threshold=2347
-fragm_threshold=2346
-auth_algs=1
-wpa=1
-wpa_passphrase=<YOUR PASSPHRASE>
-wpa_key_mgmt=WPA-PSK
-wpa_pairwise=TKIP
-
-Remplacez dans cet exemple :
-
-<YOUR SSID> par le nom que vous souhaitez donner à votre réseau ;
-<YOUR PASSPHRASE> par le mot de passer permettant l'accès au réseau.
-Déclarez enfin ce fichier afin qu'il soit utilisé par hostapd dans /etc/default/hostapd en ajoutant la ligne :
-
-DAEMON_CONF="/etc/hostapd/hostapd.conf"
-Configuration du routage entre l'interface sans fil et l'interface filaire
-Activer le routage IP dans le fichier /etc/sysctl.conf en décommentant la ligne suivante :
-
-net.ipv4.ip_forward=1
-Pour activer ce routage immédiatement (sans avoir besoin de redémarrer), lancez la commande :
-
-sudo sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
-Vous pouvez enfin configurer le routage en utilisant iptables :
-
-sudo iptables -t nat -A POSTROUTING -o wlan1 -j MASQUERADE
-sudo iptables -A FORWARD -i wlan1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
-sudo iptables -A FORWARD -i wlan0 -o wlan1 -j ACCEPT
-Persistence des règles iptables
-Les règles iptables définies précédemment sont perdues au au redémarrage. Pour les recharger à chaque lancement de la machine, vous pouvez utiliser le paquet iptables-persistent. Pour l'installer :
-
-sudo apt-get install iptables-persistent
-Par défaut, il demandera si vous souhaitez enregistrer les règles actuellement définies. Choisissez « oui ». Si vous souhaitez les redéfinir ultérieurement, vous pourrez les enregistrer en invoquant la cible save et les recharger avec reload :
-
-sudo /etc/init.d/netfilter-persistent save
-
-sudo /etc/init.d/netfilter-persistent reload
-
-La voie est libre
-À ce stade, vous deviez être en mesure de vous connecter au point d'accès de façon transparente. Étant donnée la richesse des matériels et leurs spécificités, je ne garantis pas que ce « mode d'emploi » soit universel. J'espère néanmoins qu'il vous aura aidé en première approche à monter votre propre point d'accès Wifi.
 
 
 Installer WebIOPi :
@@ -378,9 +392,26 @@ Après avoir longtemps galéré avec Webiopi et le Python (faire passer une variabl
 compliqué...), j'ai finalement compris qu'il était possible de tout faire depuis le Javascript intégré dans la page Html
 (même gerer les pins en PWM !!)
 
+
 A ce stade, la vidéo, les photos et l'IR fonctionnent via macro dans le script python et tout le pilotage moteur dans le Javascript...
-Tout fonctionne...
+
+Le Script permet au robot de :
+
+- Etre piloté via wifi par l'interface (page web)
+
+- Se déplacer de façon autonome et à la demande (via l'interface, sans but précis pour l'instant) grace au capteur de distance
+
+- Prendre des photos, activer/désactiver et afficher le stream camera (via l'interface)
+
+- Prendre une photo en cas de mouvement détecté en mode surveillance (activable via interface)
 
 
+Evolutions à venir :
+
+- cette config met à genoux l'alim du raspberry (carte d'extention Quimat avc batterie 3.7v, 3700mAh)
+=> power tank 5v 20000mAh commandé
+
+- manque de puissance des moteurs, mais tenue en batterie correcte donc :
+=> achat nouvelle batterie 6v à brancher en série à la premiere, chargeur 12V, 2 moteurs 12v couple élevé  
 
 
