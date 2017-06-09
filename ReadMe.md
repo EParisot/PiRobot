@@ -321,7 +321,7 @@ Afin de pouvoir démarrer le service en une seule ligne de commande :
 
 Pour déplacer le dossier d'installation :
 
-````
+```
 sudo cp mjpg_streamer /usr/local/bin
 sudo cp output_http.so input_file.so input_uvc.so input_raspicam.so /usr/local/lib/
 sudo cp -R www /usr/local/www
