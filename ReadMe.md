@@ -427,25 +427,36 @@ git pull origin
 ./build
 ```
 
-
 Puis WebIOPi :
 
 https://github.com/thortex/rpi3-webiopi/wiki/HowToBuild
 
 
-
-
 WebIOPi est à présent installé et fonctionnel, essayez de vous rendre sur <ip du raspberry>:8000
 Vous devriez tomber sur une interface listant vos ports Gpio (par défaut : user = webiopi, pass = raspberry).
 
-Explications :
---------------
 
-Ajouter cette balise dans le Head de index.html : 
+Google-Assistant SDK :
+----------------------
 
+Afin de profiter des immenses possibilités du SDK Google Assistant, et parceque c'est gratuit et libre :
+
+https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/config-dev-project-and-account
+
+
+Divers :
+--------
+
+Ajouter cette balise dans le Head de index.html afin de faire disparaitre la barre 
+d'adresses quand vous aurez ajouté la page de commandes à votre menu principal (Android) :
+ 
 ```
 <meta name="mobile-web-app-capable" content="yes">
 ```
+
+
+Pilotage/Gestion :
+------------------
 
 Afin de controller les moteurs, nous allons utiliser un L298N Double pont H DC Driver.
 Il faudra lui envoyer les infos de pilotage de moteurs sur 4 fils (2 moteurs, marche avant et marche arrière).
@@ -458,17 +469,18 @@ compliqué...), j'ai finalement compris qu'il était possible de tout faire depuis
 (même gerer les pins en PWM !!)
 
 
-A ce stade, la vidéo, les photos et l'IR fonctionnent via macro dans le script python et tout le pilotage moteur dans le Javascript...
+A ce stade, la vidéo (+IR), les photos(idem), la detection de distance, de mouvement et les relevés de T° du processeur 
+fonctionnent via macro dans le script python et tout le pilotage manuel des moteurs se fait depuis la page web (Javascript)
 
-Le Script permet au robot de :
-
-- Etre piloté via wifi par l'interface (page web)
+Le Script Python permet au robot de :
 
 - Se déplacer de façon autonome et à la demande (via l'interface, sans but précis pour l'instant) grace au capteur de distance
 
 - Prendre des photos, activer/désactiver et afficher le stream camera (via l'interface)
 
 - Prendre une photo en cas de mouvement détecté en mode surveillance (activable via interface)
+
+- Converser via le SDK Google Assistant et le micro + enceinte...
 
 
 Evolutions à venir :
