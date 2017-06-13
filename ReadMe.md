@@ -473,7 +473,7 @@ Pilotage/Gestion :
 ------------------
 
 Afin de controller les moteurs, nous allons utiliser un L298N Double pont H DC Driver.
-Il faudra lui envoyer les infos de pilotage de moteurs sur 4 fils (2 moteurs, marche avant et marche arrière).
+Il faudra lui envoyer les infos de pilotage de moteurs sur 6 fils (2 moteurs, marche avant, marche arrière et vitesse).
 
 Le signal envoyé sera de type PWM (Pulse With Modulation) pour la vitesse + GPIO pour activer les directions de sorte que chaque pin/cable controle une direction par moteur, 
 avec modulation de la tention appliquée au moteur selon l'input des joystics (NippleJS).

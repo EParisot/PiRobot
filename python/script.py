@@ -67,27 +67,21 @@ def reactionDistance():
         GPIO.pulseRatio(MOT1v, 0.5)
         GPIO.pulseRatio(MOT2v, 0.5)
         sleep(0.1)
+        GPIO.pulseRatio(MOT1v, 0)
+        GPIO.pulseRatio(MOT2v, 0)
         GPIO.digitalWrite(MOT1b, GPIO.HIGH)
         GPIO.digitalWrite(MOT1a, GPIO.LOW)
         GPIO.digitalWrite(MOT2b, GPIO.LOW)
         GPIO.digitalWrite(MOT2a, GPIO.HIGH)
         GPIO.pulseRatio(MOT1v, 1)
-        GPIO.pulseRatio(MOT1v, 1)
-        sleep(0.2)
+        GPIO.pulseRatio(MOT2v, 1)
+        sleep(0.3)
         GPIO.pulseRatio(MOT1v, 0)
         GPIO.pulseRatio(MOT2v, 0)
 
 
-def avancerVite():
-        GPIO.digitalWrite(MOT1b, GPIO.LOW)
-        GPIO.digitalWrite(MOT2b, GPIO.LOW)
-        GPIO.digitalWrite(MOT1a, GPIO.HIGH)
-        GPIO.digitalWrite(MOT2a, GPIO.HIGH)
-        GPIO.pulseRatio(MOT1v, 0.3)
-        GPIO.pulseRatio(MOT2v, 0.3)
 
-
-def avancerLent():
+def avancer():
         GPIO.digitalWrite(MOT1b, GPIO.LOW)
         GPIO.digitalWrite(MOT2b, GPIO.LOW)
         GPIO.digitalWrite(MOT1a, GPIO.HIGH)
@@ -102,14 +96,12 @@ def ledDistance():
                 sleep(0.01)
         elif Distance()<1.0:
                 GPIO.digitalWrite(led2, GPIO.HIGH)
-                avancerLent()
+                avancer()
                 sleep(0.1)
         else:
                 GPIO.digitalWrite(led3, GPIO.HIGH)
-                avancerVite()
+                avancer()
                 sleep(0.2)
-        GPIO.pulseRatio(MOT1v, 0)
-        GPIO.pulseRatio(MOT2v, 0)
         GPIO.digitalWrite(led1, GPIO.LOW)
         GPIO.digitalWrite(led2, GPIO.LOW)
         GPIO.digitalWrite(led3, GPIO.LOW)
@@ -133,7 +125,6 @@ def DistOff():
 def searchMvt():
         if pir.motion_detected:
                 takeaPic()
-                sleep(1)
                 GPIO.digitalWrite(led1, GPIO.HIGH)
                 GPIO.digitalWrite(led2, GPIO.HIGH)
                 GPIO.digitalWrite(led3, GPIO.HIGH)                
