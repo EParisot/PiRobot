@@ -38,6 +38,9 @@ Matériel utilisé :
 * Chassis TYCO Rebound (batterie HS, peut importe il faudra trouver une alternative):
 -> http://www.ebay.com/bhp/tyco-rebound
 
+* 2 Moteurs DC 12v 6000RPM 1.8A :
+-> https://www.amazon.fr/gp/product/B008595SC8/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1
+
 
 * un smartphone, un PC...
 
@@ -496,13 +499,17 @@ Le Script Python permet au robot de :
 
 - Converser via le SDK Google Assistant et le micro + enceinte...
 
+Les moteurs ont étés changés pour plus de puissance/vitesse mais surtout plus de couple (le robot peinait sur les surfaces rugueuses, demis tours sur place impossibles...)
+Du coup, le robot a eu tendance à re-devenir une Tyco Rebound et à se retourner, grimper aux murs, etc... La tention appliquée aux moteurs à été /2.
+On retrouve une vitesse raisonnable, par contre, plus aucun obstacle ne lui résiste et il fait à présent ses demi-tours dans l'herbe sans problème !
 
 Evolutions à venir :
 
 - cette config met à genoux l'alim du raspberry (carte d'extention Quimat avc batterie 3.7v, 3700mAh)
 => power tank 5v 20000mAh commandé
 
-- manque de puissance des moteurs, mais tenue en batterie correcte donc :
-=> achat nouvelle batterie 6v à brancher en série à la premiere, chargeur 12V, 2 moteurs 12v couple élevé  
+- le robot va continuer sa route indéfiniement si il perd la connexion wifi alors que l'ordre est donné d'avancer... c'est problématique.
+=> trouver un moyen de stopper les moteurs si plus de connexion à la page de contrôle... hum hum...
+
 
 
