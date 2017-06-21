@@ -21,6 +21,7 @@ Matériel utilisé :
 -> https://www.amazon.fr/gp/product/B06XTKVPZN/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1
 
 * DongleUSB Wifi (afin d'avoir une connexion Internet si la première interfacte wifi est en point d'acces) :
+-> https://www.amazon.fr/gp/product/B008IFXQFU/ref=oh_aui_detailpage_o07_s00?ie=UTF8&psc=1
 
 * Kit apprentissage bien utile, quelques capteurs intéressants (PIR, Ultrasonic distance sensor,...) :
 -> https://www.amazon.fr/gp/product/B01N0TKCJN/ref=oh_aui_detailpage_o02_s01?ie=UTF8&psc=1
