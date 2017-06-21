@@ -9,11 +9,11 @@ GPIO = webiopi.GPIO
 NIGHT = 26
 
 MOT1v = 12
-MOT1a = 13
-MOT1b = 19
+MOT1a = 19
+MOT1b = 13
 MOT2v = 16
-MOT2a = 20
-MOT2b = 21
+MOT2a = 21
+MOT2b = 20
 
 ultrasonic = DistanceSensor(echo=17, trigger=4)
 led1 = 24
@@ -39,11 +39,8 @@ def takeaPic():
 	piccmd = 'raspistill -vf -hf -o /home/pi/Pictures/Photos/' + picdate + '.jpg'
 	subprocess.call(piccmd, shell=True)
 
-global temp
-
 @webiopi.macro
 def Temp(arg0):
-	global temp
 	temp = int(subprocess.check_output(["/opt/vc/bin/vcgencmd","measure_temp"])[5:7])
 	return (temp)
 
@@ -59,38 +56,24 @@ def Distance():
         dist = ultrasonic.distance
         return (dist)
 
-global dir1
-dir1 = False
-global dir2
-dir2 = False
-
 def reactionDistance():
-        global dir1
         GPIO.digitalWrite(MOT1a, GPIO.LOW)
         GPIO.digitalWrite(MOT2a, GPIO.LOW)
         GPIO.digitalWrite(MOT1b, GPIO.HIGH)
         GPIO.digitalWrite(MOT2b, GPIO.HIGH)
-        GPIO.pulseRatio(MOT1v, 0.5)
-        GPIO.pulseRatio(MOT2v, 0.5)
+        GPIO.pulseRatio(MOT1v, 0.4)
+        GPIO.pulseRatio(MOT2v, 0.4)
         sleep(0.1)
         GPIO.pulseRatio(MOT1v, 0)
         GPIO.pulseRatio(MOT2v, 0)
-        if dir1 == False:
-                GPIO.digitalWrite(MOT1b, GPIO.HIGH)
-                GPIO.digitalWrite(MOT1a, GPIO.LOW)
-                GPIO.digitalWrite(MOT2b, GPIO.LOW)
-                GPIO.digitalWrite(MOT2a, GPIO.HIGH)
-                dir1 = True
-        else:
-                GPIO.digitalWrite(MOT1b, GPIO.LOW)
-                GPIO.digitalWrite(MOT1a, GPIO.HIGH)
-                GPIO.digitalWrite(MOT2b, GPIO.HIGH)
-                GPIO.digitalWrite(MOT2a, GPIO.LOW)
-                dir1 = False
-
-        GPIO.pulseRatio(MOT1v, 1)
-        GPIO.pulseRatio(MOT2v, 1)
-        sleep(0.3)
+        sleep(0.1)
+        GPIO.digitalWrite(MOT1b, GPIO.HIGH)
+        GPIO.digitalWrite(MOT1a, GPIO.LOW)
+        GPIO.digitalWrite(MOT2b, GPIO.LOW)
+        GPIO.digitalWrite(MOT2a, GPIO.HIGH)
+        GPIO.pulseRatio(MOT1v, 0.4)
+        GPIO.pulseRatio(MOT2v, 0.4)
+        sleep(0.2)
         GPIO.pulseRatio(MOT1v, 0)
         GPIO.pulseRatio(MOT2v, 0)
 
@@ -101,10 +84,14 @@ def avancer():
         GPIO.digitalWrite(MOT2b, GPIO.LOW)
         GPIO.digitalWrite(MOT1a, GPIO.HIGH)
         GPIO.digitalWrite(MOT2a, GPIO.HIGH)
-        GPIO.pulseRatio(MOT1v, 0.3)
-        GPIO.pulseRatio(MOT2v, 0.3)
+        GPIO.pulseRatio(MOT1v, 0.2)
+        GPIO.pulseRatio(MOT2v, 0.1)
+        sleep(0.2)
+        GPIO.pulseRatio(MOT1v, 0.1)
+        GPIO.pulseRatio(MOT2v, 0.2)
+        sleep(0.2)
 
-def ledDistance():
+def scanDistance():
         if Distance()<0.5000000:
                 reactionDistance()
                 GPIO.digitalWrite(led1, GPIO.HIGH)
@@ -121,22 +108,6 @@ def ledDistance():
         GPIO.digitalWrite(led2, GPIO.LOW)
         GPIO.digitalWrite(led3, GPIO.LOW)
 
-
-global Dist
-Dist=False
-
-@webiopi.macro
-def DistOn():
-        global Dist
-        Dist=True
-
-
-@webiopi.macro
-def DistOff():
-        global Dist
-        Dist=False
-
-
 def searchMvt():
         if pir.motion_detected:
                 takeaPic()
@@ -150,19 +121,34 @@ def searchMvt():
                 sleep(1)
 
 
-global Mvt
-Mvt=False
+class Switch:
+    def __init__(self, switch_state):
+        self.switch_state = switch_state
+
+
+switchDist = Switch(False)
+switchMvt = Switch(False)
+
+
+@webiopi.macro
+def DistOn():
+        switchDist.switch_state = True
+
+
+@webiopi.macro
+def DistOff():
+        switchDist.switch_state = False
+
 
 @webiopi.macro
 def MvtOn():
-        global Mvt
-        Mvt=True
-
+        switchMvt.switch_state = True
 
 @webiopi.macro
 def MvtOff():
-        global Mvt
-        Mvt=False
+        switchMvt.switch_state = False
+
+
 
 # setup function is automatically called at WebIOPi startup
 def setup():
@@ -189,11 +175,13 @@ def setup():
 	GPIO.setFunction(led3, GPIO.OUT)
 	GPIO.digitalWrite(led3, GPIO.LOW)
 
+
+
 ### loop function is repeatedly called by WebIOPi 
 def loop():
-        if Dist==True:
-                ledDistance()
-        if Mvt==True:
+        if switchDist.switch_state==True:
+                scanDistance()
+        if  switchMvt.switch_state==True:
                 searchMvt()
         webiopi.sleep(0.01)
 

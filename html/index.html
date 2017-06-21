@@ -58,43 +58,43 @@
 		
 					
 		function Mot1dirA() {				
-			webiopi().digitalWrite(19, 0);
-			webiopi().digitalWrite(13, 1);
+			webiopi().digitalWrite(13, 0);
+			webiopi().digitalWrite(19, 1);
 		}
 		
 		function Mot1dirB() {			
-			webiopi().digitalWrite(13, 0);		
-			webiopi().digitalWrite(19, 1);
+			webiopi().digitalWrite(19, 0);		
+			webiopi().digitalWrite(13, 1);
 		}
 					
 		function Mot1speed(speed1) {		
-			var Speed1 = speed1/100;
+			var Speed1 = 0.5*speed1/100;
 			webiopi().pulseRatio(12, Speed1);
 		}
 		
 		function Mot1stop() {			
-			webiopi().digitalWrite(19, 0);
-			webiopi().digitalWrite(13, 0);     
+			webiopi().digitalWrite(13, 0);
+			webiopi().digitalWrite(19, 0);     
 		}
 			
 		function Mot2dirA() {
-			webiopi().digitalWrite(21, 0);
-			webiopi().digitalWrite(20, 1);
+			webiopi().digitalWrite(20, 0);
+			webiopi().digitalWrite(21, 1);
 		}
 		
 		function Mot2dirB() {		
-			webiopi().digitalWrite(20, 0);		
-			webiopi().digitalWrite(21, 1);
+			webiopi().digitalWrite(21, 0);		
+			webiopi().digitalWrite(20, 1);
 		}
 					
 		function Mot2speed(speed2) {		
-			var Speed2 = speed2/100;
+			var Speed2 = 0.5*speed2/100;
 			webiopi().pulseRatio(16, Speed2);
 		}
 		
 		function Mot2stop() {			
-			webiopi().digitalWrite(21, 0);
-			webiopi().digitalWrite(20, 0);      		
+			webiopi().digitalWrite(20, 0);
+			webiopi().digitalWrite(21, 0);      		
 		}
 		
 		
