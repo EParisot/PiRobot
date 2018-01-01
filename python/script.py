@@ -4,6 +4,18 @@ from time import sleep
 import subprocess
 from gpiozero import DistanceSensor, MotionSensor
 
+# import opencv necessary packages
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+import time
+import cv2
+# init camera and grab a ref to the raw camera capture
+camera = PiCamera()
+camera.resolution = (640, 480)
+camera.hflip = True
+camera.vflip = True
+rawCapture = PiRGBArray(camera, size=(640, 480))
+
 GPIO = webiopi.GPIO
 
 NIGHT = 26
@@ -15,14 +27,12 @@ MOT2v = 16
 MOT2a = 21
 MOT2b = 20
 
-ultrasonic = DistanceSensor(echo=17, trigger=4)
 led1 = 24
 led2 = 23
 led3 = 18
 
+ultrasonic = DistanceSensor(echo=17, trigger=4)
 pir = MotionSensor(27)
-
-
 
 
 @webiopi.macro
@@ -56,6 +66,36 @@ def Distance():
         dist = ultrasonic.distance
         return (dist)
 
+def avancer():
+        GPIO.digitalWrite(MOT1b, GPIO.LOW)
+        GPIO.digitalWrite(MOT2b, GPIO.LOW)
+        GPIO.digitalWrite(MOT1a, GPIO.HIGH)
+        GPIO.digitalWrite(MOT2a, GPIO.HIGH)
+        GPIO.pulseRatio(MOT1v, 0.2)
+        GPIO.pulseRatio(MOT2v, 0.2)
+
+def rotateR():
+        GPIO.digitalWrite(MOT1b, GPIO.HIGH)
+        GPIO.digitalWrite(MOT1a, GPIO.LOW)
+        GPIO.digitalWrite(MOT2b, GPIO.LOW)
+        GPIO.digitalWrite(MOT2a, GPIO.HIGH)
+        GPIO.pulseRatio(MOT1v, 0.4)
+        GPIO.pulseRatio(MOT2v, 0.4)
+        sleep(0.2)
+        GPIO.pulseRatio(MOT1v, 0)
+        GPIO.pulseRatio(MOT2v, 0)
+
+def rotateL():
+        GPIO.digitalWrite(MOT1a, GPIO.HIGH)
+        GPIO.digitalWrite(MOT1b, GPIO.LOW)
+        GPIO.digitalWrite(MOT2a, GPIO.LOW)
+        GPIO.digitalWrite(MOT2b, GPIO.HIGH)
+        GPIO.pulseRatio(MOT1v, 0.4)
+        GPIO.pulseRatio(MOT2v, 0.4)
+        sleep(0.2)
+        GPIO.pulseRatio(MOT1v, 0)
+        GPIO.pulseRatio(MOT2v, 0)
+
 def reactionDistance():
         GPIO.digitalWrite(MOT1a, GPIO.LOW)
         GPIO.digitalWrite(MOT2a, GPIO.LOW)
@@ -67,25 +107,35 @@ def reactionDistance():
         GPIO.pulseRatio(MOT1v, 0)
         GPIO.pulseRatio(MOT2v, 0)
         sleep(0.1)
-        GPIO.digitalWrite(MOT1b, GPIO.HIGH)
-        GPIO.digitalWrite(MOT1a, GPIO.LOW)
-        GPIO.digitalWrite(MOT2b, GPIO.LOW)
-        GPIO.digitalWrite(MOT2a, GPIO.HIGH)
-        GPIO.pulseRatio(MOT1v, 0.4)
-        GPIO.pulseRatio(MOT2v, 0.4)
-        sleep(0.2)
-        GPIO.pulseRatio(MOT1v, 0)
-        GPIO.pulseRatio(MOT2v, 0)
+        rotateR()
 
+def scanFace():
+        # allow camera to warm up
+        time.sleep(0.1)
+        
+        # capture an image
+        camera.capture(rawCapture, format='bgr')
+        # At this point the image is available as stream.array
+        img = rawCapture.array
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
+        # import XML Classifiers
+        face_cascade = cv2.CascadeClassifier('/home/pi/opencv-3.4.0/data/haarcascades/haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
-def avancer():
-        GPIO.digitalWrite(MOT1b, GPIO.LOW)
-        GPIO.digitalWrite(MOT2b, GPIO.LOW)
-        GPIO.digitalWrite(MOT1a, GPIO.HIGH)
-        GPIO.digitalWrite(MOT2a, GPIO.HIGH)
-        GPIO.pulseRatio(MOT1v, 0.2)
-        GPIO.pulseRatio(MOT2v, 0.2)
+        if len(faces) > 0:
+                GPIO.digitalWrite(led3, GPIO.HIGH)
+                sleep(0.5)
+                GPIO.digitalWrite(led3, GPIO.LOW)
+                sleep(0.5)
+        else:
+                GPIO.digitalWrite(led1, GPIO.HIGH)
+                sleep(0.5)
+                GPIO.digitalWrite(led1, GPIO.LOW)
+                sleep(0.5)
+
+        # clear the stream in preparation for the next frame
+        rawCapture.truncate(0)
 
 def scanDistance():
         if Distance()<0.5000000:
@@ -121,7 +171,6 @@ class Switch:
     def __init__(self, switch_state):
         self.switch_state = switch_state
 
-
 switchDist = Switch(False)
 switchMvt = Switch(False)
 
@@ -134,6 +183,13 @@ def DistOn():
 @webiopi.macro
 def DistOff():
         switchDist.switch_state = False
+        GPIO.digitalWrite(MOT1a, GPIO.LOW)
+        GPIO.digitalWrite(MOT2a, GPIO.LOW)
+        GPIO.digitalWrite(MOT1b, GPIO.HIGH)
+        GPIO.digitalWrite(MOT2b, GPIO.HIGH)
+        GPIO.pulseRatio(MOT1v, 0)
+        GPIO.pulseRatio(MOT2v, 0)
+        
 
 
 @webiopi.macro
@@ -176,9 +232,13 @@ def setup():
 ### loop function is repeatedly called by WebIOPi 
 def loop():
         if switchDist.switch_state==True:
-                scanDistance()
+                #scanDistance()
+                pass
+
         if  switchMvt.switch_state==True:
-                searchMvt()
+                #searchMvt()
+                scanFace()
+
         webiopi.sleep(0.01)
 
 # destroy function is called at WebIOPi shutdown
