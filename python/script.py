@@ -2,19 +2,8 @@ import webiopi
 import datetime
 from time import sleep
 import subprocess
+#broken until 1.5:
 from gpiozero import DistanceSensor, MotionSensor
-
-# import opencv necessary packages
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-import time
-import cv2
-# init camera and grab a ref to the raw camera capture
-camera = PiCamera()
-camera.resolution = (640, 480)
-camera.hflip = True
-camera.vflip = True
-rawCapture = PiRGBArray(camera, size=(640, 480))
 
 GPIO = webiopi.GPIO
 
@@ -62,9 +51,7 @@ def Shutdown():
 def Reboot():
         subprocess.call(["sudo", "reboot"])
 
-def Distance():
-        dist = ultrasonic.distance
-        return (dist)
+
 
 def avancer():
         GPIO.digitalWrite(MOT1b, GPIO.LOW)
@@ -109,33 +96,10 @@ def reactionDistance():
         sleep(0.1)
         rotateR()
 
-def scanFace():
-        # allow camera to warm up
-        time.sleep(0.1)
-        
-        # capture an image
-        camera.capture(rawCapture, format='bgr')
-        # At this point the image is available as stream.array
-        img = rawCapture.array
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-        # import XML Classifiers
-        face_cascade = cv2.CascadeClassifier('/home/pi/opencv-3.4.0/data/haarcascades/haarcascade_frontalface_default.xml')
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-
-        if len(faces) > 0:
-                GPIO.digitalWrite(led3, GPIO.HIGH)
-                sleep(0.5)
-                GPIO.digitalWrite(led3, GPIO.LOW)
-                sleep(0.5)
-        else:
-                GPIO.digitalWrite(led1, GPIO.HIGH)
-                sleep(0.5)
-                GPIO.digitalWrite(led1, GPIO.LOW)
-                sleep(0.5)
-
-        # clear the stream in preparation for the next frame
-        rawCapture.truncate(0)
+def Distance():
+        #Broken until gpiozero 1.5#
+        dist = ultrasonic.distance
+        return (dist)
 
 def scanDistance():
         if Distance()<0.5000000:
@@ -232,12 +196,10 @@ def setup():
 ### loop function is repeatedly called by WebIOPi 
 def loop():
         if switchDist.switch_state==True:
-                #scanDistance()
-                pass
+                scanDistance()
 
         if  switchMvt.switch_state==True:
-                #searchMvt()
-                scanFace()
+                searchMvt()
 
         webiopi.sleep(0.01)
 
