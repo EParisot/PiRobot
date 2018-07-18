@@ -3,10 +3,12 @@ PiRobot
 
 Bienvenue sur le projet PiRObot !
 
-Ce projet à pour objectif la fabrication d'un robot mobile, capable de voir, entendre, 
+Ce projet Ã  pour objectif la fabrication d'un robot mobile, capable de voir, entendre, 
 et pourquoi pas, d'interragir avec son environnement ...
 
-Matériel utilisé :
+![](Photos/IMG_20170531_232140.jpg)
+
+MatÃ©riel utilisÃ© :
 ------------------
 
 * RaspberryPi3 avec sa carteSD, box, alim, clavier, souris, etc... :
@@ -17,19 +19,19 @@ Matériel utilisé :
 * Carte d'extention Batterie pour rendre le Rpi autonome en alim :
 -> https://www.amazon.fr/gp/product/B06VVMHPFR/ref=oh_aui_detailpage_o01_s00?ie=UTF8&psc=1 
 
-* Caméra IR-Cut :
+* CamÃ©ra IR-Cut :
 -> https://www.amazon.fr/gp/product/B06XTKVPZN/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1
 
-* DongleUSB Wifi (afin d'avoir une connexion Internet si la première interfacte wifi est en point d'acces) :
+* DongleUSB Wifi (afin d'avoir une connexion Internet si la premiÃ¨re interfacte wifi est en point d'acces) :
 -> https://www.amazon.fr/gp/product/B008IFXQFU/ref=oh_aui_detailpage_o07_s00?ie=UTF8&psc=1
 
-* Kit apprentissage bien utile, quelques capteurs intéressants (PIR, Ultrasonic distance sensor,...) :
+* Kit apprentissage bien utile, quelques capteurs intÃ©ressants (PIR, Ultrasonic distance sensor,...) :
 -> https://www.amazon.fr/gp/product/B01N0TKCJN/ref=oh_aui_detailpage_o02_s01?ie=UTF8&psc=1
 
 * L298N Double pont H DC Driver :
 -> https://www.amazon.fr/gp/product/B071RN2NNK/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1
 
-* 1 ou 2 Batterie(s) 6V 2300mAh NiMH + Chargeur à prévoir 6v ou 12v selon votre config moteurs (6v de base):
+* 1 ou 2 Batterie(s) 6V 2300mAh NiMH + Chargeur Ã  prÃ©voir 6v ou 12v selon votre config moteurs (6v de base):
 -> https://www.amazon.fr/gp/product/B00LAFZR0C/ref=oh_aui_detailpage_o04_s00?ie=UTF8&psc=1
 
 * Micro (USB), enceinte portable (microJack) (nous installerons GoogleAssistant SDK plus tard) :
@@ -51,7 +53,7 @@ Utilitaires Windows sur le PC :
  
 -> SDFormater (formatage carte SD : options = erase et resize ON) 
 
--> Etcher (écriture image sur la carteSD)
+-> Etcher (Ã©criture image sur la carteSD)
 
 -> Putty (SSH client)
 
@@ -98,21 +100,21 @@ Ascii_upload_enabled=YES
 Ascii_download_enabled=YES
 ```
 
-Puis faites [ctrl] + [x] puis [o] puis [Entrée]
+Puis faites [ctrl] + [x] puis [o] puis [EntrÃ©e]
 
 
 Installer le Dongle Wifi :
 --------------------------
 
-Le but de cette opération est de rendre le robot utilisable en conditions connectée et déconnectée.
+Le but de cette opÃ©ration est de rendre le robot utilisable en conditions connectÃ©e et dÃ©connectÃ©e.
 
-L'interface wlan0 sera le point d'accès pour le smartphone qui va piloter le tout.
-L'interface supplémentaire (dongle) wlan1 sera l'accès Internet.
+L'interface wlan0 sera le point d'accÃ¨s pour le smartphone qui va piloter le tout.
+L'interface supplÃ©mentaire (dongle) wlan1 sera l'accÃ¨s Internet.
 
 Avant tout branchez le dongle, attribuez lui une IP fixe dans votre Box et routez le port TCP 8000 dessus.
 Dans mon exemple 192.168.3.1
 
-Définition d'une adresse IP statique
+DÃ©finition d'une adresse IP statique
 Dans le fichier /etc/network/interfaces, supprimer les lignes suivantes :
 
 ```
@@ -126,7 +128,7 @@ address 192.168.3.1
 netmask 255.255.255.0
 ```
 
-Redémarrez le réseau :
+RedÃ©marrez le rÃ©seau :
 
 ```
 sudo service networking restart
@@ -134,7 +136,7 @@ sudo service networking restart
 
 Installation d'un serveur DHCP
 
-Le serveur DHCP permet d'attribuer automatiquement une adresse IP aux machines qui se connecteront à votre réseau Wifi.
+Le serveur DHCP permet d'attribuer automatiquement une adresse IP aux machines qui se connecteront Ã  votre rÃ©seau Wifi.
 
 Installez le paquet isc-dhcp-server :
 
@@ -142,7 +144,7 @@ Installez le paquet isc-dhcp-server :
 sudo apt-get install isc-dhcp-server
 ```
 
-À ce stade, le service ne devrait pas démarrer correctement :
+Ã€ ce stade, le service ne devrait pas dÃ©marrer correctement :
 
 Generating /etc/default/isc-dhcp-server...
 [FAIL] Starting ISC DHCP server: dhcpd[....] check syslog for diagnostics. ... failed!
@@ -150,15 +152,15 @@ Generating /etc/default/isc-dhcp-server...
 invoke-rc.d: initscript isc-dhcp-server, action "start" failed.
 Vous pouvez ignorer ces erreurs pour le moment.
 
-Éditez le fichier de configuration du serveur : /etc/dhcp/dhcpd.conf et commentez les options domain-name et domain-name-servers :
+Ã‰ditez le fichier de configuration du serveur : /etc/dhcp/dhcpd.conf et commentez les options domain-name et domain-name-servers :
 
 ```
 #option domain-name "example.org";
 #option domain-name-servers ns1.example.org, ns2.example.org;
 ```
 
-Décommentez la ligne authoritative. 
-Cela permet d'indiquer à votre serveur DHCP qu'il est le seul à fournir des adresses IP sur ce réseau et donc possède la pleine connaissance des baux accordés.
+DÃ©commentez la ligne authoritative. 
+Cela permet d'indiquer Ã  votre serveur DHCP qu'il est le seul Ã  fournir des adresses IP sur ce rÃ©seau et donc possÃ¨de la pleine connaissance des baux accordÃ©s.
 
 ```
 # If this DHCP server is the official DHCP server for the local
@@ -180,18 +182,18 @@ subnet 192.168.3.0 netmask 255.255.255.0 {
 }
 ```
 
-Le paramètre range limite la place d'adresses IP qui seront alouées. On en permet ici 51 : c'est probablement beaucoup (trop) s'il s'agit de votre réseau personnel.
+Le paramÃ¨tre range limite la place d'adresses IP qui seront alouÃ©es. On en permet ici 51 : c'est probablement beaucoup (trop) s'il s'agit de votre rÃ©seau personnel.
 
-L'option broadcast-address spécifie l'adresse IP telle que les paquets qui seront envoyés sur cette adresse seront interceptés par toutes les machines présentes sur ce réseau (ayant donc une IP entre 192.166.100.1 et 192.168.100.254 car le masque de sous réseau est 255.255.255.0).
+L'option broadcast-address spÃ©cifie l'adresse IP telle que les paquets qui seront envoyÃ©s sur cette adresse seront interceptÃ©s par toutes les machines prÃ©sentes sur ce rÃ©seau (ayant donc une IP entre 192.166.100.1 et 192.168.100.254 car le masque de sous rÃ©seau est 255.255.255.0).
 
-Quant à elle, l'option routers indique l'adresse de la passerelle, c'est à dire la machine par laquelle passent tous les paquets sortants du réseau (en direction ou en provenance d'Internet par exemple).
+Quant Ã  elle, l'option routers indique l'adresse de la passerelle, c'est Ã  dire la machine par laquelle passent tous les paquets sortants du rÃ©seau (en direction ou en provenance d'Internet par exemple).
 
-On attribue ici un bail pour une durée de 600 secondes avec le paramètre default-lease-time. C'est cette durée qui sera utilisée si le client ne précise rien. S'il demande un bail en précisant une durée, celle-ci lui sera accordée si elle ne dépasse pas 7200 secondes, comme défini avec le paramètre max-lease-time.
+On attribue ici un bail pour une durÃ©e de 600 secondes avec le paramÃ¨tre default-lease-time. C'est cette durÃ©e qui sera utilisÃ©e si le client ne prÃ©cise rien. S'il demande un bail en prÃ©cisant une durÃ©e, celle-ci lui sera accordÃ©e si elle ne dÃ©passe pas 7200 secondes, comme dÃ©fini avec le paramÃ¨tre max-lease-time.
 
-Cet exemple utilise le DNS de FDN (ligne domain-name-servers). Vous pouvez bien évidemment en utiliser d'autres (certains préfèrent ceux de Google...).
+Cet exemple utilise le DNS de FDN (ligne domain-name-servers). Vous pouvez bien Ã©videmment en utiliser d'autres (certains prÃ©fÃ¨rent ceux de Google...).
 
 
-Déclarez enfin l'interface sans fil comme l'interface par défaut pour répondre aux requêtes DHCP dans le fichier /etc/default/isc-dhcp-server :
+DÃ©clarez enfin l'interface sans fil comme l'interface par dÃ©faut pour rÃ©pondre aux requÃªtes DHCP dans le fichier /etc/default/isc-dhcp-server :
 
 ```
 # On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
@@ -202,13 +204,13 @@ INTERFACES="wlan0"
 
 Installation de hostapd
 
-Hostapd est un démon permettant de créer un point d'accès sans fil. Pour l'installer :
+Hostapd est un dÃ©mon permettant de crÃ©er un point d'accÃ¨s sans fil. Pour l'installer :
 
 ```
 sudo apt-get install hostapd
 
 ```
-Créez son fichier de configuration, /etc/hostapd/hostapd.conf :
+CrÃ©ez son fichier de configuration, /etc/hostapd/hostapd.conf :
 
 ```
 interface=wlan0
@@ -230,10 +232,10 @@ wpa_pairwise=TKIP
 
 Remplacez dans cet exemple :
 
-<YOUR SSID> par le nom que vous souhaitez donner à votre réseau ;
-<YOUR PASSPHRASE> par le mot de passer permettant l'accès au réseau.
+<YOUR SSID> par le nom que vous souhaitez donner Ã  votre rÃ©seau ;
+<YOUR PASSPHRASE> par le mot de passer permettant l'accÃ¨s au rÃ©seau.
 
-Déclarez enfin ce fichier afin qu'il soit utilisé par hostapd dans /etc/default/hostapd en ajoutant la ligne :
+DÃ©clarez enfin ce fichier afin qu'il soit utilisÃ© par hostapd dans /etc/default/hostapd en ajoutant la ligne :
 
 ```
 DAEMON_CONF="/etc/hostapd/hostapd.conf"
@@ -241,13 +243,13 @@ DAEMON_CONF="/etc/hostapd/hostapd.conf"
 
 Configuration du routage entre l'interface sans fil et l'interface filaire
 
-Activer le routage IP dans le fichier /etc/sysctl.conf en décommentant la ligne suivante :
+Activer le routage IP dans le fichier /etc/sysctl.conf en dÃ©commentant la ligne suivante :
 
 ```
 net.ipv4.ip_forward=1
 ```
 
-Pour activer ce routage immédiatement (sans avoir besoin de redémarrer), lancez la commande :
+Pour activer ce routage immÃ©diatement (sans avoir besoin de redÃ©marrer), lancez la commande :
 
 ```
 sudo sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
@@ -261,15 +263,15 @@ sudo iptables -A FORWARD -i wlan1 -o wlan0 -m state --state RELATED,ESTABLISHED 
 sudo iptables -A FORWARD -i wlan0 -o wlan1 -j ACCEPT
 ```
 
-Persistence des règles iptables
+Persistence des rÃ¨gles iptables
 
-Les règles iptables définies précédemment sont perdues au au redémarrage. Pour les recharger à chaque lancement de la machine, vous pouvez utiliser le paquet iptables-persistent. Pour l'installer :
+Les rÃ¨gles iptables dÃ©finies prÃ©cÃ©demment sont perdues au au redÃ©marrage. Pour les recharger Ã  chaque lancement de la machine, vous pouvez utiliser le paquet iptables-persistent. Pour l'installer :
 
 ```
 sudo apt-get install iptables-persistent
 ```
 
-Par défaut, il demandera si vous souhaitez enregistrer les règles actuellement définies. Choisissez « oui ». Si vous souhaitez les redéfinir ultérieurement, vous pourrez les enregistrer en invoquant la cible save et les recharger avec reload :
+Par dÃ©faut, il demandera si vous souhaitez enregistrer les rÃ¨gles actuellement dÃ©finies. Choisissez Â« oui Â». Si vous souhaitez les redÃ©finir ultÃ©rieurement, vous pourrez les enregistrer en invoquant la cible save et les recharger avec reload :
 
 ```
 sudo /etc/init.d/netfilter-persistent save
@@ -278,27 +280,27 @@ sudo /etc/init.d/netfilter-persistent reload
 ```
 
 La voie est libre
-À ce stade, vous deviez être en mesure de vous connecter au point d'accès de façon transparente. 
-Étant donnée la richesse des matériels et leurs spécificités, je ne garantis pas que ce « mode d'emploi » soit universel. 
-J'espère néanmoins qu'il vous aura aidé en première approche à monter votre propre point d'accès Wifi.
+Ã€ ce stade, vous deviez Ãªtre en mesure de vous connecter au point d'accÃ¨s de faÃ§on transparente. 
+Ã‰tant donnÃ©e la richesse des matÃ©riels et leurs spÃ©cificitÃ©s, je ne garantis pas que ce Â« mode d'emploi Â» soit universel. 
+J'espÃ¨re nÃ©anmoins qu'il vous aura aidÃ© en premiÃ¨re approche Ã  monter votre propre point d'accÃ¨s Wifi.
 
 
 
-Installer la Caméra :
+Installer la CamÃ©ra :
 ---------------------
 
-Déballez et montez la caméra avec ses diodes IR, branchez la au Raspberry à l'aide de la nappe fournie.
+DÃ©ballez et montez la camÃ©ra avec ses diodes IR, branchez la au Raspberry Ã  l'aide de la nappe fournie.
 
-Activez la caméra via votre écran ou par la console :
-(si vous n'avez pas encore installé Puttyn il est grand temps !)
+Activez la camÃ©ra via votre Ã©cran ou par la console :
+(si vous n'avez pas encore installÃ© Puttyn il est grand temps !)
 
 ```
 sudo raspi-config
 ```
 
-et activez la caméra, rebootez.
+et activez la camÃ©ra, rebootez.
 
-Nous allons avoir besoin de streamer la vidéo vers une interface web, pour cela nous utiliserons Mjpg-streamer
+Nous allons avoir besoin de streamer la vidÃ©o vers une interface web, pour cela nous utiliserons Mjpg-streamer
 (https://github.com/jacksonliam/mjpg-streamer)
 
 ```
@@ -309,7 +311,7 @@ sudo make
 sudo make install
 ```
 
-Pour lancer la vidéo (a tester avant d'aller plus loin) :
+Pour lancer la vidÃ©o (a tester avant d'aller plus loin) :
 
 ```
 cd mjpg-streamer/mjpg-streamer-experimental
@@ -317,13 +319,13 @@ export LD_LIBRARY_PATH=.
 ./mjpg_streamer -o "output_http.so -w ./www" -i "input_raspicam.so"
 ```
 
-Vous pouvez accéder à la page qui hébèrge votre vidéo à l'adresse <IP du Raspberry>:8080
+Vous pouvez accÃ©der Ã  la page qui hÃ©bÃ¨rge votre vidÃ©o Ã  l'adresse <IP du Raspberry>:8080
 
-Ctrl+C pour stopper la vidéo.
+Ctrl+C pour stopper la vidÃ©o.
 
-Afin de pouvoir démarrer le service en une seule ligne de commande :
+Afin de pouvoir dÃ©marrer le service en une seule ligne de commande :
 
-Pour déplacer le dossier d'installation :
+Pour dÃ©placer le dossier d'installation :
 
 ```
 sudo cp mjpg_streamer /usr/local/bin
@@ -331,7 +333,7 @@ sudo cp output_http.so input_file.so input_uvc.so input_raspicam.so /usr/local/l
 sudo cp -R www /usr/local/www
 ```
 
-Et Afin de pouvoir démarrer le service en une seule ligne de commande :
+Et Afin de pouvoir dÃ©marrer le service en une seule ligne de commande :
 
 ```
 sudo nano /etc/init.d/livestream.sh
@@ -364,7 +366,7 @@ case "$1" in
                 f_message "mjpg_streamer started"
                 ;;
         stop)
-                f_message "Stopping mjpg_streamer…"
+                f_message "Stopping mjpg_streamerÂ…"
                 killall mjpg_streamer
                 f_message "mjpg_streamer stopped"
                 ;;
@@ -376,7 +378,7 @@ case "$1" in
                 f_message "Restarted daemon: mjpg_streamer"
                 ;;
         status)
-                pid=`ps -A | grep mjpg_streamer | grep -v "grep" | grep -v mjpg_streamer. | awk ‘{print $1}’ | head -n 1`
+                pid=`ps -A | grep mjpg_streamer | grep -v "grep" | grep -v mjpg_streamer. | awk Â‘{print $1}Â’ | head -n 1`
                 if [ -n "$pid" ];
                 then
                         f_message "mjpg_streamer is running with pid ${pid}"
@@ -402,9 +404,9 @@ sudo chmod 755 /etc/init.d/livestream.sh
 sudo update-rc.d livestream.sh defaults
 ```
 
-La dernière commande ajoute mjpg-streamer au Boot.
+La derniÃ¨re commande ajoute mjpg-streamer au Boot.
 
-Pour gérer le service :
+Pour gÃ©rer le service :
 
 ```
 sudo service livestream.sh start
@@ -412,15 +414,15 @@ sudo service livestream.sh stop
 sudo service livestream.sh restart
 ```
 
-Afin de stocker les photos que prendra le Robot, nous créons un dossier: /home/pi/Pictures/Photos
+Afin de stocker les photos que prendra le Robot, nous crÃ©ons un dossier: /home/pi/Pictures/Photos
 
 
 
 Installer WebIOPi :
 -------------------
 
-WebIOPi est un utilitaire qui va permettre à une page web hébergée sur le raspberry de communiquer avec un script Python.
-Cela va nous permettre de créer notre interface et controler des ports GPIO.
+WebIOPi est un utilitaire qui va permettre Ã  une page web hÃ©bergÃ©e sur le raspberry de communiquer avec un script Python.
+Cela va nous permettre de crÃ©er notre interface et controler des ports GPIO.
 
 Commencez par installer WiringPi :
 
@@ -436,18 +438,18 @@ Puis WebIOPi :
 https://github.com/thortex/rpi3-webiopi/wiki/HowToBuild
 
 
-WebIOPi est à présent installé et fonctionnel, essayez de vous rendre sur <ip du raspberry>:8000
-Vous devriez tomber sur une interface listant vos ports Gpio (par défaut : user = webiopi, pass = raspberry).
+WebIOPi est Ã  prÃ©sent installÃ© et fonctionnel, essayez de vous rendre sur <ip du raspberry>:8000
+Vous devriez tomber sur une interface listant vos ports Gpio (par dÃ©faut : user = webiopi, pass = raspberry).
 
 
 Google-Assistant SDK :
 ----------------------
 
-Afin de profiter des immenses possibilités du SDK Google Assistant, et parceque c'est gratuit et libre :
+Afin de profiter des immenses possibilitÃ©s du SDK Google Assistant, et parceque c'est gratuit et libre :
 
 https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/config-dev-project-and-account
 
-Pour le démarrer au Boot, copiez le script GA.sh dans le répertoire /home/pi/ et rendez le éxécutable :
+Pour le dÃ©marrer au Boot, copiez le script GA.sh dans le rÃ©pertoire /home/pi/ et rendez le Ã©xÃ©cutable :
 
 ```
 sudo chmod 755 GA.sh
@@ -466,7 +468,7 @@ Divers :
 --------
 
 Ajouter cette balise dans le Head de index.html afin de faire disparaitre la barre 
-d'adresses quand vous aurez ajouté la page de commandes à votre menu principal (Android) :
+d'adresses quand vous aurez ajoutÃ© la page de commandes Ã  votre menu principal (Android) :
  
 ```
 <meta name="mobile-web-app-capable" content="yes">
@@ -477,40 +479,40 @@ Pilotage/Gestion :
 ------------------
 
 Afin de controller les moteurs, nous allons utiliser un L298N Double pont H DC Driver.
-Il faudra lui envoyer les infos de pilotage de moteurs sur 6 fils (2 moteurs, marche avant, marche arrière et vitesse).
+Il faudra lui envoyer les infos de pilotage de moteurs sur 6 fils (2 moteurs, marche avant, marche arriÃ¨re et vitesse).
 
-Le signal envoyé sera de type PWM (Pulse With Modulation) pour la vitesse + GPIO pour activer les directions de sorte que chaque pin/cable controle une direction par moteur, 
-avec modulation de la tention appliquée au moteur selon l'input des joystics (NippleJS).
+Le signal envoyÃ© sera de type PWM (Pulse With Modulation) pour la vitesse + GPIO pour activer les directions de sorte que chaque pin/cable controle une direction par moteur, 
+avec modulation de la tention appliquÃ©e au moteur selon l'input des joystics (NippleJS).
 
-Après avoir longtemps galéré avec Webiopi et le Python (faire passer une variable numérique du javascript au python semble 
-compliqué...), j'ai finalement compris qu'il était possible de tout faire depuis le Javascript intégré dans la page Html
-(même gerer les pins en PWM !!)
+AprÃ¨s avoir longtemps galÃ©rÃ© avec Webiopi et le Python (faire passer une variable numÃ©rique du javascript au python semble 
+compliquÃ©...), j'ai finalement compris qu'il Ã©tait possible de tout faire depuis le Javascript intÃ©grÃ© dans la page Html
+(mÃªme gerer les pins en PWM !!)
 
 
-A ce stade, la vidéo (+IR), les photos(idem), la detection de distance, de mouvement et les relevés de T° du processeur 
+A ce stade, la vidÃ©o (+IR), les photos(idem), la detection de distance, de mouvement et les relevÃ©s de TÂ° du processeur 
 fonctionnent via macro dans le script python et tout le pilotage manuel des moteurs se fait depuis la page web (Javascript)
 
 Le Script Python permet au robot de :
 
-- Se déplacer de façon autonome et à la demande (via l'interface, sans but précis pour l'instant) grace au capteur de distance
+- Se dÃ©placer de faÃ§on autonome et Ã  la demande (via l'interface, sans but prÃ©cis pour l'instant) grace au capteur de distance
 
-- Prendre des photos, activer/désactiver et afficher le stream camera (via l'interface)
+- Prendre des photos, activer/dÃ©sactiver et afficher le stream camera (via l'interface)
 
-- Prendre une photo en cas de mouvement détecté en mode surveillance (activable via interface)
+- Prendre une photo en cas de mouvement dÃ©tectÃ© en mode surveillance (activable via interface)
 
 - Converser via le SDK Google Assistant et le micro + enceinte...
 
-Les moteurs ont étés changés pour plus de puissance/vitesse mais surtout plus de couple (le robot peinait sur les surfaces rugueuses, demis tours sur place impossibles...)
-Du coup, le robot a eu tendance à re-devenir une Tyco Rebound et à se retourner, grimper aux murs, etc... La tention appliquée aux moteurs à été /2.
-On retrouve une vitesse raisonnable, par contre, plus aucun obstacle ne lui résiste et il fait à présent ses demi-tours dans l'herbe sans problème !
+Les moteurs ont Ã©tÃ©s changÃ©s pour plus de puissance/vitesse mais surtout plus de couple (le robot peinait sur les surfaces rugueuses, demis tours sur place impossibles...)
+Du coup, le robot a eu tendance Ã  re-devenir une Tyco Rebound et Ã  se retourner, grimper aux murs, etc... La tention appliquÃ©e aux moteurs Ã  Ã©tÃ© /2.
+On retrouve une vitesse raisonnable, par contre, plus aucun obstacle ne lui rÃ©siste et il fait Ã  prÃ©sent ses demi-tours dans l'herbe sans problÃ¨me !
 
-Evolutions à venir :
+Evolutions Ã  venir :
 
-- cette config met à genoux l'alim du raspberry (carte d'extention Quimat avc batterie 3.7v, 3700mAh)
-=> power tank 5v 20000mAh commandé
+- cette config met Ã  genoux l'alim du raspberry (carte d'extention Quimat avc batterie 3.7v, 3700mAh)
+=> power tank 5v 20000mAh commandÃ©
 
-- le robot va continuer sa route indéfiniement si il perd la connexion wifi alors que l'ordre est donné d'avancer... c'est problématique.
-=> trouver un moyen de stopper les moteurs si plus de connexion à la page de contrôle... hum hum...
+- le robot va continuer sa route indÃ©finiement si il perd la connexion wifi alors que l'ordre est donnÃ© d'avancer... c'est problÃ©matique.
+=> trouver un moyen de stopper les moteurs si plus de connexion Ã  la page de contrÃ´le... hum hum...
 
 
 
